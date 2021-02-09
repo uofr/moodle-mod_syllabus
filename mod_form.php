@@ -54,8 +54,9 @@ class mod_syllabus_mod_form extends moodleform_mod {
         $filemanager_options = array();
         $filemanager_options['accepted_types'] = '*';
         $filemanager_options['maxbytes'] = 0;
-        $filemanager_options['maxfiles'] = -1;
+        $filemanager_options['maxfiles'] = 1;
         $filemanager_options['mainfile'] = true;
+        $filemanager_options['subdirs'] = 0;
 
         $mform->addElement('filemanager', 'files', get_string('selectfiles'), null, $filemanager_options);
 
