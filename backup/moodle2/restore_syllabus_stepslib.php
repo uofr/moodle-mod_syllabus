@@ -40,7 +40,7 @@ class restore_syllabus_activity_structure_step extends restore_activity_structur
         return $this->prepare_activity_structure($paths);
     }
 
-    protected function process_resource($data) {
+    protected function process_syllabus($data) {
         global $DB;
 
         $data = (object)$data;

@@ -122,3 +122,4 @@ If there are multiple files in this syllabus, the start file type is displayed.
 
 If the file type is not known to the system, it will not display.';
 $string['uploadeddate'] = 'Uploaded {$a}';
+$string['selectfile'] = 'Select syllabus file';

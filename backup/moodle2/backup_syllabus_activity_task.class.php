@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines backup_resource_activity_task class
+ * Defines backup_syllabus_activity_task class
  *
  * @package     mod_syllabus
  * @category    backup
@@ -57,13 +57,13 @@ class backup_syllabus_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot,"/");
 
-        // Link to the list of resources.
+        // Link to the list of syllabi.
         $search="/(".$base."\/mod\/syllabus\/index.php\?id\=)([0-9]+)/";
         $content= preg_replace($search, '$@SYLLABUSINDEX*$2@$', $content);
 
-        // Link to resource view by moduleid.
+        // Link to Syllabus view by moduleid.
         $search = "/(".$base."\/mod\/syllabus\/view.php\?id\=)([0-9]+)/";
-        // Link to resource view by recordid
+        // Link to syllabus view by recordid
         $search2 = "/(".$base."\/mod\/syllabus\/view.php\?r\=)([0-9]+)/";
 
         $content = preg_replace($search, '$@SYLLABUSVIEWBYID*$2@$', $content);
