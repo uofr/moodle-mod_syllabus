@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Search area for mod_resource activities.
+ * Search area for mod_syllabus activities.
  *
- * @package    mod_resource
- * @copyright  2015 David Monllao {@link http://www.davidmonllao.com}
+ * @package    mod_syllabus
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_resource\search;
+namespace mod_syllabus\search;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Search area for mod_resource activities.
+ * Search area for mod_syllabus activities.
  *
- * @package    mod_resource
- * @copyright  2015 David Monllao {@link http://www.davidmonllao.com}
+ * @package    mod_syllabus
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class activity extends \core_search\base_activity {

@@ -17,9 +17,9 @@
 /**
  * Resource search unit tests.
  *
- * @package     mod_resource
+ * @package     mod_syllabus
  * @category    test
- * @copyright   2016 Eric Merrill {@link http://www.merrilldigital.com}
+ * @copyright   2021 Marty Gilbert <martygilbert@gmail>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,12 +31,12 @@ require_once($CFG->dirroot . '/search/tests/fixtures/testable_core_search.php');
 /**
  * Provides the unit tests for forum search.
  *
- * @package     mod_resource
+ * @package     mod_syllabus
  * @category    test
  * @copyright   2016 Eric Merrill {@link http://www.merrilldigital.com}
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_resource_search_testcase extends advanced_testcase {
+class mod_syllabus_search_testcase extends advanced_testcase {
 
     /**
      * @var string Area id
@@ -47,7 +47,7 @@ class mod_resource_search_testcase extends advanced_testcase {
         $this->resetAfterTest(true);
         set_config('enableglobalsearch', true);
 
-        $this->resourceareaid = \core_search\manager::generate_areaid('mod_resource', 'activity');
+        $this->resourceareaid = \core_search\manager::generate_areaid('mod_syllabus', 'activity');
 
         // Set \core_search::instance to the mock_search_engine as we don't require the search engine to be working to test this.
         $search = testable_core_search::instance();
@@ -89,10 +89,10 @@ class mod_resource_search_testcase extends advanced_testcase {
         $filerecord['sortorder'] = 0;
         $fs->create_file_from_string($filerecord, 'Test resource file 2');
 
-        $resource = $this->getDataGenerator()->create_module('resource', $record);
+        $resource = $this->getDataGenerator()->create_module('syllabus', $record);
 
         $searcharea = \core_search\manager::get_search_area($this->resourceareaid);
-        $this->assertInstanceOf('\mod_resource\search\activity', $searcharea);
+        $this->assertInstanceOf('\mod_syllabus\search\activity', $searcharea);
 
         $recordset = $searcharea->get_recordset_by_timestamp(0);
         $nrecords = 0;

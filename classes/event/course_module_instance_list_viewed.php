@@ -15,23 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The mod_resource instance list viewed event.
+ * The mod_syllabus instance list viewed event.
  *
- * @package    mod_resource
- * @copyright  2014 Rajesh Taneja <rajesh@moodle.com>
+ * @package    mod_syllabus
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_resource\event;
+namespace mod_syllabus\event;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_resource instance list viewed event class.
+ * The mod_syllabus instance list viewed event class.
  *
- * @package    mod_resource
- * @since      Moodle 2.7
- * @copyright  2014 Rajesh Taneja <rajesh@moodle.com>
+ * @package    mod_syllabus
+ * @since      Moodle 3.9
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {

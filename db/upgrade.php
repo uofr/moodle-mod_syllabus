@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Resource module upgrade code
+ * Syllabus module upgrade code
  *
  * This file keeps track of upgrades to
- * the resource module
+ * the syllabus module
  *
  * Sometimes, changes between versions involve
  * alterations to database structures and other
@@ -37,27 +37,15 @@
  * Please do not forget to use upgrade_set_timeout()
  * before any action that may take longer time to finish.
  *
- * @package    mod_resource
- * @copyright  2009 Petr Skoda  {@link http://skodak.org}
+ * @package    mod_syllabus
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
 
-function xmldb_resource_upgrade($oldversion) {
+function xmldb_syllabus_upgrade($oldversion) {
     global $CFG;
-
-    // Automatically generated Moodle v3.5.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.6.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.7.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    // Automatically generated Moodle v3.8.0 release upgrade line.
-    // Put any upgrade step following this.
 
     // Automatically generated Moodle v3.9.0 release upgrade line.
     // Put any upgrade step following this.

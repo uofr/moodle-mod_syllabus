@@ -1,4 +1,4 @@
-@mod @mod_resource @_file_upload
+@mod @mod_syllabus @_file_upload
 Feature: Teacher can specify different display options for the resource
   In order to provide more information about a file
   As a teacher
@@ -27,7 +27,7 @@ Feature: Teacher can specify different display options for the resource
       | Show size                 | 0          |
       | Show type                 | 0          |
       | Show upload/modified date | 0          |
-    And I upload "mod/resource/tests/fixtures/samplefile.txt" file to "Select files" filemanager
+    And I upload "mod/syllabus/tests/fixtures/samplefile.txt" file to "Select files" filemanager
     And I press "Save and display"
     Then ".resourcedetails" "css_element" should not exist
     And I am on "Course 1" course homepage
@@ -43,7 +43,7 @@ Feature: Teacher can specify different display options for the resource
       | Show size                 | <showsize> |
       | Show type                 | <showtype> |
       | Show upload/modified date | <showdate> |
-    And I upload "mod/resource/tests/fixtures/samplefile.txt" file to "Select files" filemanager
+    And I upload "mod/syllabus/tests/fixtures/samplefile.txt" file to "Select files" filemanager
     And I press "Save and display"
     Then I <seesize> see "6 bytes" in the ".resourcedetails" "css_element"
     And I <seetype> see "Text file" in the ".resourcedetails" "css_element"

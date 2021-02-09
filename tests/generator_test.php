@@ -17,9 +17,9 @@
 /**
  * PHPUnit data generator tests.
  *
- * @package mod_resource
+ * @package mod_syllabus
  * @category phpunit
- * @copyright 2013 The Open University
+ * @copyright 2021 Marty Gilbert <martygilbert@gmail>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,12 +29,12 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * PHPUnit data generator testcase.
  *
- * @package    mod_resource
+ * @package    mod_syllabus
  * @category phpunit
- * @copyright 2013 The Open University
+ * @copyright 2021 Marty Gilbert <martygilbert@gmail>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_resource_generator_testcase extends advanced_testcase {
+class mod_syllabus_generator_testcase extends advanced_testcase {
     public function test_generator() {
         global $DB, $SITE;
 
@@ -44,23 +44,23 @@ class mod_resource_generator_testcase extends advanced_testcase {
         $this->setAdminUser();
 
         // There are 0 resources initially.
-        $this->assertEquals(0, $DB->count_records('resource'));
+        $this->assertEquals(0, $DB->count_records('syllabus'));
 
         // Create the generator object and do standard checks.
-        $generator = $this->getDataGenerator()->get_plugin_generator('mod_resource');
-        $this->assertInstanceOf('mod_resource_generator', $generator);
-        $this->assertEquals('resource', $generator->get_modulename());
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_syllabus');
+        $this->assertInstanceOf('mod_syllabus_generator', $generator);
+        $this->assertEquals('syllabus', $generator->get_modulename());
 
         // Create three instances in the site course.
         $generator->create_instance(array('course' => $SITE->id));
         $generator->create_instance(array('course' => $SITE->id));
         $resource = $generator->create_instance(array('course' => $SITE->id));
-        $this->assertEquals(3, $DB->count_records('resource'));
+        $this->assertEquals(3, $DB->count_records('syllabus'));
 
         // Check the course-module is correct.
-        $cm = get_coursemodule_from_instance('resource', $resource->id);
+        $cm = get_coursemodule_from_instance('syllabus', $resource->id);
         $this->assertEquals($resource->id, $cm->instance);
-        $this->assertEquals('resource', $cm->modname);
+        $this->assertEquals('syllabus', $cm->modname);
         $this->assertEquals($SITE->id, $cm->course);
 
         // Check the context is correct.
@@ -69,7 +69,7 @@ class mod_resource_generator_testcase extends advanced_testcase {
 
         // Check that generated resource module contains a file.
         $fs = get_file_storage();
-        $files = $fs->get_area_files($context->id, 'mod_resource', 'content', false, '', false);
+        $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', false, '', false);
         $this->assertEquals(1, count($files));
     }
 }

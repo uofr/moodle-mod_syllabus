@@ -18,17 +18,17 @@
 /**
  * Definition of log events
  *
- * @package    mod_resource
+ * @package    mod_syllabus
  * @category   log
- * @copyright  2010 Petr Skoda (http://skodak.org)
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
-    array('module'=>'resource', 'action'=>'view', 'mtable'=>'resource', 'field'=>'name'),
-    array('module'=>'resource', 'action'=>'view all', 'mtable'=>'resource', 'field'=>'name'),
-    array('module'=>'resource', 'action'=>'update', 'mtable'=>'resource', 'field'=>'name'),
-    array('module'=>'resource', 'action'=>'add', 'mtable'=>'resource', 'field'=>'name'),
+    array('module'=>'syllabus', 'action'=>'view', 'mtable'=>'syllabus', 'field'=>'name'),
+    array('module'=>'syllabus', 'action'=>'view all', 'mtable'=>'syllabus', 'field'=>'name'),
+    array('module'=>'syllabus', 'action'=>'update', 'mtable'=>'syllabus', 'field'=>'name'),
+    array('module'=>'syllabus', 'action'=>'add', 'mtable'=>'syllabus', 'field'=>'name'),
 );

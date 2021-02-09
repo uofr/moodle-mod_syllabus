@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Social breadth indicator - resource.
+ * Social breadth indicator - syllabus.
  *
- * @package   mod_resource
- * @copyright 2017 David Monllao {@link http://www.davidmonllao.com}
+ * @package   mod_syllabus
+ * @copyright 2021 Marty Gilbert <martygilbert@gmail>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_resource\analytics\indicator;
+namespace mod_syllabus\analytics\indicator;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
  * Social breadth indicator - resource.
  *
- * @package   mod_resource
- * @copyright 2017 David Monllao {@link http://www.davidmonllao.com}
+ * @package   mod_syllabus
+ * @copyright 2021 Marty Gilbert <martygilbert@gmail>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class social_breadth extends activity_base {
@@ -43,7 +43,7 @@ class social_breadth extends activity_base {
      * @return \lang_string
      */
     public static function get_name() : \lang_string {
-        return new \lang_string('indicator:socialbreadth', 'mod_resource');
+        return new \lang_string('indicator:socialbreadth', 'mod_syllabus');
     }
 
     public function get_indicator_type() {

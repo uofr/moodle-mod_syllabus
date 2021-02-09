@@ -15,20 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for mod_resource.
+ * Privacy Subsystem implementation for mod_syllabus.
  *
- * @package    mod_resource
- * @copyright  2018 Zig Tan <zig@moodle.com>
+ * @package    mod_syllabus
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-namespace mod_resource\privacy;
+namespace mod_syllabus\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_resource module does not store any data.
+ * The mod_syllabus module does not store any data.
  *
- * @copyright  2018 Zig Tan <zig@moodle.com>
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements \core_privacy\local\metadata\null_provider {

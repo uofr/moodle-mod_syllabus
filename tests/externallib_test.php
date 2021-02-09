@@ -15,13 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External mod_resource functions unit tests
+ * External mod_syllabus functions unit tests
  *
- * @package    mod_resource
+ * @package    mod_syllabus
  * @category   external
- * @copyright  2015 Juan Leyva <juan@moodle.com>
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @since      Moodle 3.0
+ * @since      Moodle 3.9
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -31,20 +31,20 @@ global $CFG;
 require_once($CFG->dirroot . '/webservice/tests/helpers.php');
 
 /**
- * External mod_resource functions unit tests
+ * External mod_syllabus functions unit tests
  *
- * @package    mod_resource
+ * @package    mod_syllabus
  * @category   external
- * @copyright  2015 Juan Leyva <juan@moodle.com>
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.0
  */
-class mod_resource_external_testcase extends externallib_advanced_testcase {
+class mod_syllabus_external_testcase extends externallib_advanced_testcase {
 
     /**
-     * Test view_resource
+     * Test view_syllabus
      */
-    public function test_view_resource() {
+    public function test_view_syllabus() {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -52,14 +52,14 @@ class mod_resource_external_testcase extends externallib_advanced_testcase {
         $this->setAdminUser();
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
-        $resource = $this->getDataGenerator()->create_module('resource', array('course' => $course->id));
-        $context = context_module::instance($resource->cmid);
-        $cm = get_coursemodule_from_instance('resource', $resource->id);
+        $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id));
+        $context = context_module::instance($syllabus->cmid);
+        $cm = get_coursemodule_from_instance('syllabus', $syllabus->id);
 
         // Test invalid instance id.
         try {
-            mod_resource_external::view_resource(0);
-            $this->fail('Exception expected due to invalid mod_resource instance id.');
+            mod_syllabus_external::view_syllabus(0);
+            $this->fail('Exception expected due to invalid mod_syllabus instance id.');
         } catch (moodle_exception $e) {
             $this->assertEquals('invalidrecord', $e->errorcode);
         }
@@ -68,7 +68,7 @@ class mod_resource_external_testcase extends externallib_advanced_testcase {
         $user = self::getDataGenerator()->create_user();
         $this->setUser($user);
         try {
-            mod_resource_external::view_resource($resource->id);
+            mod_syllabus_external::view_syllabus($syllabus->id);
             $this->fail('Exception expected due to not enrolled user.');
         } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
@@ -81,30 +81,30 @@ class mod_resource_external_testcase extends externallib_advanced_testcase {
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
 
-        $result = mod_resource_external::view_resource($resource->id);
-        $result = external_api::clean_returnvalue(mod_resource_external::view_resource_returns(), $result);
+        $result = mod_syllabus_external::view_syllabus($syllabus->id);
+        $result = external_api::clean_returnvalue(mod_syllabus_external::view_syllabus_returns(), $result);
 
         $events = $sink->get_events();
         $this->assertCount(1, $events);
         $event = array_shift($events);
 
         // Checking that the event contains the expected values.
-        $this->assertInstanceOf('\mod_resource\event\course_module_viewed', $event);
+        $this->assertInstanceOf('\mod_syllabus\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/resource/view.php', array('id' => $cm->id));
+        $moodleurl = new \moodle_url('/mod/syllabus/view.php', array('id' => $cm->id));
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
 
         // Test user with no capabilities.
         // We need a explicit prohibit since this capability is only defined in authenticated user and guest roles.
-        assign_capability('mod/resource:view', CAP_PROHIBIT, $studentrole->id, $context->id);
+        assign_capability('mod/syllabus:view', CAP_PROHIBIT, $studentrole->id, $context->id);
         // Empty all the caches that may be affected by this change.
         accesslib_clear_all_caches_for_unit_testing();
         course_modinfo::clear_instance_cache();
 
         try {
-            mod_resource_external::view_resource($resource->id);
+            mod_syllabus_external::view_syllabus($syllabus->id);
             $this->fail('Exception expected due to missing capability.');
         } catch (moodle_exception $e) {
             $this->assertEquals('requireloginerror', $e->errorcode);
@@ -113,9 +113,9 @@ class mod_resource_external_testcase extends externallib_advanced_testcase {
     }
 
     /**
-     * Test test_mod_resource_get_resources_by_courses
+     * Test test_mod_syllabus_get_syllabus_by_courses
      */
-    public function test_mod_resource_get_resources_by_courses() {
+    public function test_mod_syllabus_get_syllabus_by_courses() {
         global $DB;
 
         $this->resetAfterTest(true);
@@ -132,12 +132,12 @@ class mod_resource_external_testcase extends externallib_advanced_testcase {
         // First resource.
         $record = new stdClass();
         $record->course = $course1->id;
-        $resource1 = self::getDataGenerator()->create_module('resource', $record);
+        $resource1 = self::getDataGenerator()->create_module('syllabus', $record);
 
         // Second resource.
         $record = new stdClass();
         $record->course = $course2->id;
-        $resource2 = self::getDataGenerator()->create_module('resource', $record);
+        $resource2 = self::getDataGenerator()->create_module('syllabus', $record);
 
         // Execute real Moodle enrolment as we'll call unenrol() method on the instance later.
         $enrol = enrol_get_plugin('manual');
@@ -150,7 +150,7 @@ class mod_resource_external_testcase extends externallib_advanced_testcase {
         }
         $enrol->enrol_user($instance2, $student->id, $studentrole->id);
 
-        $returndescription = mod_resource_external::get_resources_by_courses_returns();
+        $returndescription = mod_syllabus_external::get_syllabus_by_courses_returns();
 
         // Create what we expect to be returned when querying the two courses.
         $expectedfields = array('id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles',
@@ -186,34 +186,34 @@ class mod_resource_external_testcase extends externallib_advanced_testcase {
         $expectedresources = array($expected2, $expected1);
 
         // Call the external function passing course ids.
-        $result = mod_resource_external::get_resources_by_courses(array($course2->id, $course1->id));
+        $result = mod_syllabus_external::get_syllabus_by_courses(array($course2->id, $course1->id));
         $result = external_api::clean_returnvalue($returndescription, $result);
 
         // Remove the contentfiles (to be checked bellow).
-        $result['resources'][0]['contentfiles'] = [];
-        $result['resources'][1]['contentfiles'] = [];
+        $result['syllabus'][0]['contentfiles'] = [];
+        $result['syllabus'][1]['contentfiles'] = [];
 
         // Now, check that we retrieve the same data we created.
-        $this->assertEquals($expectedresources, $result['resources']);
+        $this->assertEquals($expectedresources, $result['syllabus']);
         $this->assertCount(0, $result['warnings']);
 
         // Call the external function without passing course id.
-        $result = mod_resource_external::get_resources_by_courses();
+        $result = mod_syllabus_external::get_syllabus_by_courses();
         $result = external_api::clean_returnvalue($returndescription, $result);
 
         // Remove the contentfiles (to be checked bellow).
-        $result['resources'][0]['contentfiles'] = [];
-        $result['resources'][1]['contentfiles'] = [];
+        $result['syllabus'][0]['contentfiles'] = [];
+        $result['syllabus'][1]['contentfiles'] = [];
 
         // Check that without course ids we still get the correct data.
-        $this->assertEquals($expectedresources, $result['resources']);
+        $this->assertEquals($expectedresources, $result['syllabus']);
         $this->assertCount(0, $result['warnings']);
 
         // Add a file to the intro.
         $fileintroname = "fileintro.txt";
         $filerecordinline = array(
             'contextid' => context_module::instance($resource2->cmid)->id,
-            'component' => 'mod_resource',
+            'component' => 'mod_syllabus',
             'filearea'  => 'intro',
             'itemid'    => 0,
             'filepath'  => '/',
@@ -223,32 +223,32 @@ class mod_resource_external_testcase extends externallib_advanced_testcase {
         $timepost = time();
         $fs->create_file_from_string($filerecordinline, 'image contents (not really)');
 
-        $result = mod_resource_external::get_resources_by_courses(array($course2->id, $course1->id));
+        $result = mod_syllabus_external::get_syllabus_by_courses(array($course2->id, $course1->id));
         $result = external_api::clean_returnvalue($returndescription, $result);
 
         // Check that we receive correctly the files.
-        $this->assertCount(1, $result['resources'][0]['introfiles']);
-        $this->assertEquals($fileintroname, $result['resources'][0]['introfiles'][0]['filename']);
-        $this->assertCount(1, $result['resources'][0]['contentfiles']);
-        $this->assertCount(1, $result['resources'][1]['contentfiles']);
+        $this->assertCount(1, $result['syllabus'][0]['introfiles']);
+        $this->assertEquals($fileintroname, $result['syllabus'][0]['introfiles'][0]['filename']);
+        $this->assertCount(1, $result['syllabus'][0]['contentfiles']);
+        $this->assertCount(1, $result['syllabus'][1]['contentfiles']);
         // Test autogenerated resource.
-        $this->assertEquals('resource2.txt', $result['resources'][0]['contentfiles'][0]['filename']);
-        $this->assertEquals('resource1.txt', $result['resources'][1]['contentfiles'][0]['filename']);
+        $this->assertEquals('resource2.txt', $result['syllabus'][0]['contentfiles'][0]['filename']);
+        $this->assertEquals('resource1.txt', $result['syllabus'][1]['contentfiles'][0]['filename']);
 
         // Unenrol user from second course.
         $enrol->unenrol_user($instance2, $student->id);
         array_shift($expectedresources);
 
         // Call the external function without passing course id.
-        $result = mod_resource_external::get_resources_by_courses();
+        $result = mod_syllabus_external::get_syllabus_by_courses();
         $result = external_api::clean_returnvalue($returndescription, $result);
 
         // Remove the contentfiles (to be checked bellow).
-        $result['resources'][0]['contentfiles'] = [];
-        $this->assertEquals($expectedresources, $result['resources']);
+        $result['syllabus'][0]['contentfiles'] = [];
+        $this->assertEquals($expectedresources, $result['syllabus']);
 
         // Call for the second course we unenrolled the user from, expected warning.
-        $result = mod_resource_external::get_resources_by_courses(array($course2->id));
+        $result = mod_syllabus_external::get_syllabus_by_courses(array($course2->id));
         $this->assertCount(1, $result['warnings']);
         $this->assertEquals('1', $result['warnings'][0]['warningcode']);
         $this->assertEquals($course2->id, $result['warnings'][0]['itemid']);

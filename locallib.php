@@ -27,16 +27,18 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once("$CFG->libdir/filelib.php");
 require_once("$CFG->libdir/resourcelib.php");
-require_once("$CFG->dirroot/mod/resource/lib.php");
+require_once("$CFG->dirroot/mod/syllabus/lib.php");
 
 /**
- * Redirected to migrated resource if needed,
+ * Redirected to migrated syllabus if needed,
  * return if incorrect parameters specified
  * @param int $oldid
  * @param int $cmid
  * @return void
  */
-function resource_redirect_if_migrated($oldid, $cmid) {
+
+ /*
+function syllabus_redirect_if_migrated($oldid, $cmid) {
     global $DB, $CFG;
 
     if ($oldid) {
@@ -51,26 +53,27 @@ function resource_redirect_if_migrated($oldid, $cmid) {
 
     redirect("$CFG->wwwroot/mod/$old->newmodule/view.php?id=".$old->cmid);
 }
+*/
 
 /**
- * Display embedded resource file.
- * @param object $resource
+ * Display embedded syllabus file.
+ * @param object $syllabus
  * @param object $cm
  * @param object $course
  * @param stored_file $file main file
  * @return does not return
  */
-function resource_display_embed($resource, $cm, $course, $file) {
+function syllabus_display_embed($syllabus, $cm, $course, $file) {
     global $CFG, $PAGE, $OUTPUT;
 
-    $clicktoopen = resource_get_clicktoopen($file, $resource->revision);
+    $clicktoopen = syllabus_get_clicktoopen($file, $syllabus->revision);
 
     $context = context_module::instance($cm->id);
-    $moodleurl = moodle_url::make_pluginfile_url($context->id, 'mod_resource', 'content', $resource->revision,
+    $moodleurl = moodle_url::make_pluginfile_url($context->id, 'mod_syllabus', 'content', $syllabus->revision,
             $file->get_filepath(), $file->get_filename());
 
     $mimetype = $file->get_mimetype();
-    $title    = $resource->name;
+    $title    = $syllabus->name;
 
     $extension = resourcelib_get_extension($file->get_filename());
 
@@ -99,48 +102,48 @@ function resource_display_embed($resource, $cm, $course, $file) {
         $code = resourcelib_embed_general($moodleurl, $title, $clicktoopen, $mimetype);
     }
 
-    resource_print_header($resource, $cm, $course);
-    resource_print_heading($resource, $cm, $course);
+    syllabus_print_header($syllabus, $cm, $course);
+    syllabus_print_heading($syllabus, $cm, $course);
 
     echo $code;
 
-    resource_print_intro($resource, $cm, $course);
+    syllabus_print_intro($syllabus, $cm, $course);
 
     echo $OUTPUT->footer();
     die;
 }
 
 /**
- * Display resource frames.
- * @param object $resource
+ * Display syllabus frames.
+ * @param object $syllabus
  * @param object $cm
  * @param object $course
  * @param stored_file $file main file
  * @return does not return
  */
-function resource_display_frame($resource, $cm, $course, $file) {
+function syllabus_display_frame($syllabus, $cm, $course, $file) {
     global $PAGE, $OUTPUT, $CFG;
 
     $frame = optional_param('frameset', 'main', PARAM_ALPHA);
 
     if ($frame === 'top') {
         $PAGE->set_pagelayout('frametop');
-        resource_print_header($resource, $cm, $course);
-        resource_print_heading($resource, $cm, $course);
-        resource_print_intro($resource, $cm, $course);
+        syllabus_print_header($syllabus, $cm, $course);
+        syllabus_print_heading($syllabus, $cm, $course);
+        syllabus_print_intro($syllabus, $cm, $course);
         echo $OUTPUT->footer();
         die;
 
     } else {
-        $config = get_config('resource');
+        $config = get_config('syllabus');
         $context = context_module::instance($cm->id);
-        $path = '/'.$context->id.'/mod_resource/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
+        $path = '/'.$context->id.'/mod_syllabus/content/'.$syllabus->revision.$file->get_filepath().$file->get_filename();
         $fileurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
-        $navurl = "$CFG->wwwroot/mod/resource/view.php?id=$cm->id&amp;frameset=top";
-        $title = strip_tags(format_string($course->shortname.': '.$resource->name));
+        $navurl = "$CFG->wwwroot/mod/syllabus/view.php?id=$cm->id&amp;frameset=top";
+        $title = strip_tags(format_string($course->shortname.': '.$syllabus->name));
         $framesize = $config->framesize;
-        $contentframetitle = s(format_string($resource->name));
-        $modulename = s(get_string('modulename','resource'));
+        $contentframetitle = s(format_string($syllabus->name));
+        $modulename = s(get_string('modulename','syllabus'));
         $dir = get_string('thisdirection', 'langconfig');
 
         $file = <<<EOF
@@ -166,14 +169,14 @@ EOF;
 /**
  * Internal function - create click to open text with link.
  */
-function resource_get_clicktoopen($file, $revision, $extra='') {
+function syllabus_get_clicktoopen($file, $revision, $extra='') {
     global $CFG;
 
     $filename = $file->get_filename();
-    $path = '/'.$file->get_contextid().'/mod_resource/content/'.$revision.$file->get_filepath().$file->get_filename();
+    $path = '/'.$file->get_contextid().'/mod_syllabus/content/'.$revision.$file->get_filepath().$file->get_filename();
     $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
 
-    $string = get_string('clicktoopen2', 'resource', "<a href=\"$fullurl\" $extra>$filename</a>");
+    $string = get_string('clicktoopen2', 'syllabus', "<a href=\"$fullurl\" $extra>$filename</a>");
 
     return $string;
 }
@@ -181,59 +184,59 @@ function resource_get_clicktoopen($file, $revision, $extra='') {
 /**
  * Internal function - create click to open text with link.
  */
-function resource_get_clicktodownload($file, $revision) {
+function syllabus_get_clicktodownload($file, $revision) {
     global $CFG;
 
     $filename = $file->get_filename();
-    $path = '/'.$file->get_contextid().'/mod_resource/content/'.$revision.$file->get_filepath().$file->get_filename();
+    $path = '/'.$file->get_contextid().'/mod_syllabus/content/'.$revision.$file->get_filepath().$file->get_filename();
     $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, true);
 
-    $string = get_string('clicktodownload', 'resource', "<a href=\"$fullurl\">$filename</a>");
+    $string = get_string('clicktodownload', 'syllabus', "<a href=\"$fullurl\">$filename</a>");
 
     return $string;
 }
 
 /**
- * Print resource info and workaround link when JS not available.
- * @param object $resource
+ * Print syllabus info and workaround link when JS not available.
+ * @param object $syllabus
  * @param object $cm
  * @param object $course
  * @param stored_file $file main file
  * @return does not return
  */
-function resource_print_workaround($resource, $cm, $course, $file) {
+function syllabus_print_workaround($syllabus, $cm, $course, $file) {
     global $CFG, $OUTPUT;
 
-    resource_print_header($resource, $cm, $course);
-    resource_print_heading($resource, $cm, $course, true);
-    resource_print_intro($resource, $cm, $course, true);
+    syllabus_print_header($syllabus, $cm, $course);
+    syllabus_print_heading($syllabus, $cm, $course, true);
+    syllabus_print_intro($syllabus, $cm, $course, true);
 
-    $resource->mainfile = $file->get_filename();
+    $syllabus->mainfile = $file->get_filename();
     echo '<div class="resourceworkaround">';
-    switch (resource_get_final_display_type($resource)) {
+    switch (syllabus_get_final_display_type($syllabus)) {
         case RESOURCELIB_DISPLAY_POPUP:
-            $path = '/'.$file->get_contextid().'/mod_resource/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
+            $path = '/'.$file->get_contextid().'/mod_syllabus/content/'.$syllabus->revision.$file->get_filepath().$file->get_filename();
             $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
-            $options = empty($resource->displayoptions) ? array() : unserialize($resource->displayoptions);
+            $options = empty($syllabus->displayoptions) ? array() : unserialize($syllabus->displayoptions);
             $width  = empty($options['popupwidth'])  ? 620 : $options['popupwidth'];
             $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
             $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
             $extra = "onclick=\"window.open('$fullurl', '', '$wh'); return false;\"";
-            echo resource_get_clicktoopen($file, $resource->revision, $extra);
+            echo syllabus_get_clicktoopen($file, $syllabus->revision, $extra);
             break;
 
         case RESOURCELIB_DISPLAY_NEW:
             $extra = 'onclick="this.target=\'_blank\'"';
-            echo resource_get_clicktoopen($file, $resource->revision, $extra);
+            echo syllabus_get_clicktoopen($file, $syllabus->revision, $extra);
             break;
 
         case RESOURCELIB_DISPLAY_DOWNLOAD:
-            echo resource_get_clicktodownload($file, $resource->revision);
+            echo syllabus_get_clicktodownload($file, $syllabus->revision);
             break;
 
         case RESOURCELIB_DISPLAY_OPEN:
         default:
-            echo resource_get_clicktoopen($file, $resource->revision);
+            echo syllabus_get_clicktoopen($file, $syllabus->revision);
             break;
     }
     echo '</div>';
@@ -243,50 +246,50 @@ function resource_print_workaround($resource, $cm, $course, $file) {
 }
 
 /**
- * Print resource header.
- * @param object $resource
+ * Print syllabus header.
+ * @param object $syllabus
  * @param object $cm
  * @param object $course
  * @return void
  */
-function resource_print_header($resource, $cm, $course) {
+function syllabus_print_header($syllabus, $cm, $course) {
     global $PAGE, $OUTPUT;
 
-    $PAGE->set_title($course->shortname.': '.$resource->name);
+    $PAGE->set_title($course->shortname.': '.$syllabus->name);
     $PAGE->set_heading($course->fullname);
-    $PAGE->set_activity_record($resource);
+    $PAGE->set_activity_record($syllabus);
     echo $OUTPUT->header();
 }
 
 /**
- * Print resource heading.
- * @param object $resource
+ * Print syllabus heading.
+ * @param object $syllabus
  * @param object $cm
  * @param object $course
  * @param bool $notused This variable is no longer used
  * @return void
  */
-function resource_print_heading($resource, $cm, $course, $notused = false) {
+function syllabus_print_heading($syllabus, $cm, $course, $notused = false) {
     global $OUTPUT;
-    echo $OUTPUT->heading(format_string($resource->name), 2);
+    echo $OUTPUT->heading(format_string($syllabus->name), 2);
 }
 
 
 /**
- * Gets details of the file to cache in course cache to be displayed using {@link resource_get_optional_details()}
+ * Gets details of the file to cache in course cache to be displayed using {@link syllabus_get_optional_details()}
  *
- * @param object $resource Resource table row (only property 'displayoptions' is used here)
+ * @param object $syllabus Resource table row (only property 'displayoptions' is used here)
  * @param object $cm Course-module table row
  * @return string Size and type or empty string if show options are not enabled
  */
-function resource_get_file_details($resource, $cm) {
-    $options = empty($resource->displayoptions) ? array() : @unserialize($resource->displayoptions);
+function syllabus_get_file_details($syllabus, $cm) {
+    $options = empty($syllabus->displayoptions) ? array() : @unserialize($syllabus->displayoptions);
     $filedetails = array();
     if (!empty($options['showsize']) || !empty($options['showtype']) || !empty($options['showdate'])) {
         $context = context_module::instance($cm->id);
         $fs = get_file_storage();
-        $files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false);
-        // For a typical file resource, the sortorder is 1 for the main file
+        $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0, 'sortorder DESC, id ASC', false);
+        // For a typical file syllabus, the sortorder is 1 for the main file
         // and 0 for all other files. This sort approach is used just in case
         // there are situations where the file has a different sort order.
         $mainfile = $files ? reset($files) : null;
@@ -335,24 +338,24 @@ function resource_get_file_details($resource, $cm) {
 }
 
 /**
- * Gets optional details for a resource, depending on resource settings.
+ * Gets optional details for a syllabus, depending on syllabus settings.
  *
  * Result may include the file size and type if those settings are chosen,
  * or blank if none.
  *
- * @param object $resource Resource table row (only property 'displayoptions' is used here)
+ * @param object $syllabus Resource table row (only property 'displayoptions' is used here)
  * @param object $cm Course-module table row
  * @return string Size and type or empty string if show options are not enabled
  */
-function resource_get_optional_details($resource, $cm) {
+function syllabus_get_optional_details($syllabus, $cm) {
     global $DB;
 
     $details = '';
 
-    $options = empty($resource->displayoptions) ? array() : @unserialize($resource->displayoptions);
+    $options = empty($syllabus->displayoptions) ? array() : @unserialize($syllabus->displayoptions);
     if (!empty($options['showsize']) || !empty($options['showtype']) || !empty($options['showdate'])) {
         if (!array_key_exists('filedetails', $options)) {
-            $filedetails = resource_get_file_details($resource, $cm);
+            $filedetails = syllabus_get_file_details($syllabus, $cm);
         } else {
             $filedetails = $options['filedetails'];
         }
@@ -377,10 +380,10 @@ function resource_get_optional_details($resource, $cm) {
         }
         if (!empty($options['showdate']) && (!empty($filedetails['modifieddate']) || !empty($filedetails['uploadeddate']))) {
             if (!empty($filedetails['modifieddate'])) {
-                $date = get_string('modifieddate', 'mod_resource', userdate($filedetails['modifieddate'],
+                $date = get_string('modifieddate', 'mod_syllabus', userdate($filedetails['modifieddate'],
                     get_string('strftimedatetimeshort', 'langconfig')));
             } else if (!empty($filedetails['uploadeddate'])) {
-                $date = get_string('uploadeddate', 'mod_resource', userdate($filedetails['uploadeddate'],
+                $date = get_string('uploadeddate', 'mod_syllabus', userdate($filedetails['uploadeddate'],
                     get_string('strftimedatetimeshort', 'langconfig')));
             }
             $langstring .= 'date';
@@ -388,7 +391,7 @@ function resource_get_optional_details($resource, $cm) {
         }
 
         if ($infodisplayed > 1) {
-            $details = get_string("resourcedetails_{$langstring}", 'resource',
+            $details = get_string("syllabusdetails_{$langstring}", 'syllabus',
                     (object)array('size' => $size, 'type' => $type, 'date' => $date));
         } else {
             // Only one of size, type and date is set, so just append.
@@ -400,30 +403,30 @@ function resource_get_optional_details($resource, $cm) {
 }
 
 /**
- * Print resource introduction.
- * @param object $resource
+ * Print syllabus introduction.
+ * @param object $syllabus
  * @param object $cm
  * @param object $course
  * @param bool $ignoresettings print even if not specified in modedit
  * @return void
  */
-function resource_print_intro($resource, $cm, $course, $ignoresettings=false) {
+function syllabus_print_intro($syllabus, $cm, $course, $ignoresettings=false) {
     global $OUTPUT;
 
-    $options = empty($resource->displayoptions) ? array() : unserialize($resource->displayoptions);
+    $options = empty($syllabus->displayoptions) ? array() : unserialize($syllabus->displayoptions);
 
-    $extraintro = resource_get_optional_details($resource, $cm);
+    $extraintro = syllabus_get_optional_details($syllabus, $cm);
     if ($extraintro) {
         // Put a paragaph tag around the details
-        $extraintro = html_writer::tag('p', $extraintro, array('class' => 'resourcedetails'));
+        $extraintro = html_writer::tag('p', $extraintro, array('class' => 'syllabusdetails'));
     }
 
     if ($ignoresettings || !empty($options['printintro']) || $extraintro) {
-        $gotintro = trim(strip_tags($resource->intro));
+        $gotintro = trim(strip_tags($syllabus->intro));
         if ($gotintro || $extraintro) {
             echo $OUTPUT->box_start('mod_introbox', 'resourceintro');
             if ($gotintro) {
-                echo format_module_intro('resource', $resource, $cm->id);
+                echo format_module_intro('syllabus', $syllabus, $cm->id);
             }
             echo $extraintro;
             echo $OUTPUT->box_end();
@@ -432,63 +435,42 @@ function resource_print_intro($resource, $cm, $course, $ignoresettings=false) {
 }
 
 /**
- * Print warning that instance not migrated yet.
- * @param object $resource
- * @param object $cm
- * @param object $course
- * @return void, does not return
- */
-function resource_print_tobemigrated($resource, $cm, $course) {
-    global $DB, $OUTPUT;
-
-    $resource_old = $DB->get_record('resource_old', array('oldid'=>$resource->id));
-    resource_print_header($resource, $cm, $course);
-    resource_print_heading($resource, $cm, $course);
-    resource_print_intro($resource, $cm, $course);
-    echo $OUTPUT->notification(get_string('notmigrated', 'resource', $resource_old->type));
-    echo $OUTPUT->footer();
-    die;
-}
-
-/**
  * Print warning that file can not be found.
- * @param object $resource
+ * @param object $syllabus
  * @param object $cm
  * @param object $course
  * @return void, does not return
  */
-function resource_print_filenotfound($resource, $cm, $course) {
+function syllabus_print_filenotfound($syllabus, $cm, $course) {
     global $DB, $OUTPUT;
 
-    $resource_old = $DB->get_record('resource_old', array('oldid'=>$resource->id));
-    resource_print_header($resource, $cm, $course);
-    resource_print_heading($resource, $cm, $course);
-    resource_print_intro($resource, $cm, $course);
-    if ($resource_old) {
-        echo $OUTPUT->notification(get_string('notmigrated', 'resource', $resource_old->type));
-    } else {
-        echo $OUTPUT->notification(get_string('filenotfound', 'resource'));
-    }
+    //$resource_old = $DB->get_record('resource_old', array('oldid'=>$resource->id));
+
+    syllabus_print_header($syllabus, $cm, $course);
+    syllabus_print_heading($syllabus, $cm, $course);
+    syllabus_print_intro($syllabus, $cm, $course);
+
+    echo $OUTPUT->notification(get_string('filenotfound', 'syllabus'));
     echo $OUTPUT->footer();
     die;
 }
 
 /**
  * Decide the best display format.
- * @param object $resource
+ * @param object $syllabus
  * @return int display type constant
  */
-function resource_get_final_display_type($resource) {
+function syllabus_get_final_display_type($syllabus) {
     global $CFG, $PAGE;
 
-    if ($resource->display != RESOURCELIB_DISPLAY_AUTO) {
-        return $resource->display;
+    if ($syllabus->display != RESOURCELIB_DISPLAY_AUTO) {
+        return $syllabus->display;
     }
 
-    if (empty($resource->mainfile)) {
+    if (empty($syllabus->mainfile)) {
         return RESOURCELIB_DISPLAY_DOWNLOAD;
     } else {
-        $mimetype = mimeinfo('type', $resource->mainfile);
+        $mimetype = mimeinfo('type', $syllabus->mainfile);
     }
 
     if (file_mimetype_in_typegroup($mimetype, 'archive')) {
@@ -505,7 +487,7 @@ function resource_get_final_display_type($resource) {
 /**
  * File browsing support class
  */
-class resource_content_file_info extends file_info_stored {
+class syllabus_content_file_info extends file_info_stored {
     public function get_parent() {
         if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.') {
             return $this->browser->get_file_info($this->context);
@@ -520,7 +502,7 @@ class resource_content_file_info extends file_info_stored {
     }
 }
 
-function resource_set_mainfile($data) {
+function syllabus_set_mainfile($data) {
     global $DB;
     $fs = get_file_storage();
     $cmid = $data->coursemodule;
@@ -532,12 +514,12 @@ function resource_set_mainfile($data) {
         if ($data->display == RESOURCELIB_DISPLAY_EMBED) {
             $options['embed'] = true;
         }
-        file_save_draft_area_files($draftitemid, $context->id, 'mod_resource', 'content', 0, $options);
+        file_save_draft_area_files($draftitemid, $context->id, 'mod_syllabus', 'content', 0, $options);
     }
-    $files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder', false);
+    $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0, 'sortorder', false);
     if (count($files) == 1) {
         // only one file attached, set it as main file automatically
         $file = reset($files);
-        file_set_sortorder($context->id, 'mod_resource', 'content', 0, $file->get_filepath(), $file->get_filename(), 1);
+        file_set_sortorder($context->id, 'mod_syllabus', 'content', 0, $file->get_filepath(), $file->get_filename(), 1);
     }
 }

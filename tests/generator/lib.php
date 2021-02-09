@@ -17,8 +17,8 @@
 /**
  * Data generator.
  *
- * @package    mod_resource
- * @copyright 2013 The Open University
+ * @package    mod_syllabus
+ * @copyright 2021 Marty Gilbert <martygilbert@gmail>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,14 +28,14 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Resource module data generator class.
  *
- * @package    mod_resource
- * @copyright 2013 The Open University
+ * @package    mod_syllabus
+ * @copyright 2021 Marty Gilbert <martygilbert@gmail>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_resource_generator extends testing_module_generator {
+class mod_syllabus_generator extends testing_module_generator {
 
     /**
-     * Creates new resource module instance. By default it contains a short
+     * Creates new syllabus module instance. By default it contains a short
      * text file.
      *
      * @param array|stdClass $record data for module being generated. Requires 'course' key
