@@ -16,10 +16,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * List of all resources in course
+ * Syllabus resource
  *
- * @package    mod_resource
- * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
+ * @package    mod_syllabus
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
