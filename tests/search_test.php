@@ -54,7 +54,7 @@ class mod_syllabus_search_testcase extends advanced_testcase {
     }
 
     /**
-     * Test for resource file attachments.
+     * Test for syllabus file attachments.
      *
      * @return void
      */
@@ -82,12 +82,12 @@ class mod_syllabus_search_testcase extends advanced_testcase {
             'filename'  => 'mainfile',
             'sortorder' => 1
         );
-        $fs->create_file_from_string($filerecord, 'Test resource file');
+        $fs->create_file_from_string($filerecord, 'Test syllabus file');
 
         // Attach a second file.
         $filerecord['filename'] = 'extrafile';
         $filerecord['sortorder'] = 0;
-        $fs->create_file_from_string($filerecord, 'Test resource file 2');
+        $fs->create_file_from_string($filerecord, 'Test syllabus file 2');
 
         $resource = $this->getDataGenerator()->create_module('syllabus', $record);
 

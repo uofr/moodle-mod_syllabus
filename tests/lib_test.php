@@ -48,10 +48,10 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
     }
 
     /**
-     * Test resource_view
+     * Test syllabus_view
      * @return void
      */
-    public function test_resource_view() {
+    public function test_syllabus_view() {
         global $CFG;
 
         $CFG->enablecompletion = 1;
@@ -60,15 +60,15 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
         $this->setAdminUser();
         // Setup test data.
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
-        $resource = $this->getDataGenerator()->create_module('syllabu', array('course' => $course->id),
+        $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id),
                                                             array('completion' => 2, 'completionview' => 1));
-        $context = context_module::instance($resource->cmid);
-        $cm = get_coursemodule_from_instance('syllabus', $resource->id);
+        $context = context_module::instance($syllabus->cmid);
+        $cm = get_coursemodule_from_instance('syllabus', $syllabus->id);
 
         // Trigger and capture the event.
         $sink = $this->redirectEvents();
 
-        resource_view($resource, $course, $cm, $context);
+        syllabus_view($syllabus, $course, $cm, $context);
 
         $events = $sink->get_events();
         // 2 additional events thanks to completion.
@@ -91,7 +91,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
     }
 
     /**
-     * Tests the resource_get_coursemodule_info function.
+     * Tests the syllabus_get_coursemodule_info function.
      *
      * Note: This currently doesn't test every aspect of the function, mainly focusing on the icon.
      */
@@ -105,22 +105,22 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
         $generator = $this->getDataGenerator();
         $course = $generator->create_course();
 
-        // Create a resource with no files.
+        // Create a syllabus with no files.
         $draftid = file_get_unused_draft_itemid();
-        $resource1 = $generator->create_module('syllabus', array('course' => $course->id,
+        $syllabus1 = $generator->create_module('syllabus', array('course' => $course->id,
                 'name' => 'R1', 'files' => $draftid));
 
-        // Create a resource with one file.
+        // Create a syllabus with one file.
         $draftid = file_get_unused_draft_itemid();
         $contextid = context_user::instance($USER->id)->id;
         $filerecord = array('component' => 'user', 'filearea' => 'draft', 'contextid' => $contextid,
                 'itemid' => $draftid, 'filename' => 'r2.txt', 'filepath' => '/');
         $fs = get_file_storage();
         $fs->create_file_from_string($filerecord, 'Test');
-        $resource2 = $generator->create_module('syllabus', array('course' => $course->id,
+        $syllabus2 = $generator->create_module('syllabus', array('course' => $course->id,
                 'name' => 'R2', 'files' => $draftid));
 
-        // Create a resource with two files.
+        // Create a syllabus with two files.
         $draftid = file_get_unused_draft_itemid();
         $filerecord = array('component' => 'user', 'filearea' => 'draft', 'contextid' => $contextid,
                 'itemid' => $draftid, 'filename' => 'r3.txt', 'filepath' => '/', 'sortorder' => 1);
@@ -128,40 +128,40 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
         $filerecord['filename'] = 'r3.doc';
         $filerecord['sortorder'] = 2;
         $fs->create_file_from_string($filerecord, 'Test');
-        $resource3 = $generator->create_module('syllabus', array('course' => $course->id,
+        $syllabus3 = $generator->create_module('syllabus', array('course' => $course->id,
                 'name' => 'R3', 'files' => $draftid));
 
         // Try get_coursemodule_info for first one.
-        $info = resource_get_coursemodule_info(
-                $DB->get_record('course_modules', array('id' => $resource1->cmid)));
+        $info = syllabus_get_coursemodule_info(
+                $DB->get_record('course_modules', array('id' => $syllabus1->cmid)));
 
         // The name should be set. There is no overridden icon.
         $this->assertEquals('R1', $info->name);
         $this->assertEmpty($info->icon);
 
         // For second one, there should be an overridden icon.
-        $info = resource_get_coursemodule_info(
-                $DB->get_record('course_modules', array('id' => $resource2->cmid)));
+        $info = syllabus_get_coursemodule_info(
+                $DB->get_record('course_modules', array('id' => $syllabus2->cmid)));
         $this->assertEquals('R2', $info->name);
         $this->assertEquals('f/text-24', $info->icon);
 
         // For third one, it should use the highest sortorder icon.
-        $info = resource_get_coursemodule_info(
-                $DB->get_record('course_modules', array('id' => $resource3->cmid)));
+        $info = syllabus_get_coursemodule_info(
+                $DB->get_record('course_modules', array('id' => $syllabus3->cmid)));
         $this->assertEquals('R3', $info->name);
         $this->assertEquals('f/document-24', $info->icon);
     }
 
-    public function test_resource_core_calendar_provide_event_action() {
+    public function test_syllabus_core_calendar_provide_event_action() {
         $this->resetAfterTest();
         $this->setAdminUser();
 
         // Create the activity.
         $course = $this->getDataGenerator()->create_course();
-        $resource = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id));
+        $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id));
 
         // Create a calendar event.
-        $event = $this->create_action_event($course->id, $resource->id,
+        $event = $this->create_action_event($course->id, $syllabus->id,
             \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
 
         // Create an action factory.
@@ -178,7 +178,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
         $this->assertTrue($actionevent->is_actionable());
     }
 
-    public function test_resource_core_calendar_provide_event_action_already_completed() {
+    public function test_syllabus_core_calendar_provide_event_action_already_completed() {
         global $CFG;
 
         $this->resetAfterTest();
@@ -188,14 +188,14 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
 
         // Create the activity.
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
-        $resource = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id),
+        $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id),
             array('completion' => 2, 'completionview' => 1, 'completionexpected' => time() + DAYSECS));
 
         // Get some additional data.
-        $cm = get_coursemodule_from_instance('syllabus', $resource->id);
+        $cm = get_coursemodule_from_instance('syllabus', $syllabus->id);
 
         // Create a calendar event.
-        $event = $this->create_action_event($course->id, $resource->id,
+        $event = $this->create_action_event($course->id, $syllabus->id,
             \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
 
         // Mark the activity as completed.
@@ -215,7 +215,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
     /**
      * Test mod_syllabus_core_calendar_provide_event_action with user override
      */
-    public function test_resource_core_calendar_provide_event_action_user_override() {
+    public function test_syllabus_core_calendar_provide_event_action_user_override() {
         global $CFG, $USER;
 
         $this->resetAfterTest();
@@ -225,14 +225,14 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
 
         // Create the activity.
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
-        $resource = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id),
+        $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id),
             array('completion' => 2, 'completionview' => 1, 'completionexpected' => time() + DAYSECS));
 
         // Get some additional data.
-        $cm = get_coursemodule_from_instance('syllabus', $resource->id);
+        $cm = get_coursemodule_from_instance('syllabus', $syllabus->id);
 
         // Create a calendar event.
-        $event = $this->create_action_event($course->id, $resource->id,
+        $event = $this->create_action_event($course->id, $syllabus->id,
             \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
 
         // Mark the activity as completed.

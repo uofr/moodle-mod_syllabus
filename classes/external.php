@@ -136,7 +136,7 @@ class mod_syllabus_external extends external_api {
 
 		error_log("get syllabus by courses");
         $warnings = array();
-        $returnedsyllabus = array();
+        $returnedsyllabi = array();
 
         $params = array(
             'courseids' => $courseids,

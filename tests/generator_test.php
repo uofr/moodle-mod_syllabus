@@ -40,10 +40,10 @@ class mod_syllabus_generator_testcase extends advanced_testcase {
 
         $this->resetAfterTest(true);
 
-        // Must be a non-guest user to create resources.
+        // Must be a non-guest user to create syllabus.
         $this->setAdminUser();
 
-        // There are 0 resources initially.
+        // There are 0 syllabi initially.
         $this->assertEquals(0, $DB->count_records('syllabus'));
 
         // Create the generator object and do standard checks.
@@ -54,20 +54,20 @@ class mod_syllabus_generator_testcase extends advanced_testcase {
         // Create three instances in the site course.
         $generator->create_instance(array('course' => $SITE->id));
         $generator->create_instance(array('course' => $SITE->id));
-        $resource = $generator->create_instance(array('course' => $SITE->id));
+        $syllabus = $generator->create_instance(array('course' => $SITE->id));
         $this->assertEquals(3, $DB->count_records('syllabus'));
 
         // Check the course-module is correct.
-        $cm = get_coursemodule_from_instance('syllabus', $resource->id);
-        $this->assertEquals($resource->id, $cm->instance);
+        $cm = get_coursemodule_from_instance('syllabus', $syllabus->id);
+        $this->assertEquals($syllabus->id, $cm->instance);
         $this->assertEquals('syllabus', $cm->modname);
         $this->assertEquals($SITE->id, $cm->course);
 
         // Check the context is correct.
         $context = context_module::instance($cm->id);
-        $this->assertEquals($resource->cmid, $context->instanceid);
+        $this->assertEquals($syllabus->cmid, $context->instanceid);
 
-        // Check that generated resource module contains a file.
+        // Check that generated syllabus module contains a file.
         $fs = get_file_storage();
         $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', false, '', false);
         $this->assertEquals(1, count($files));

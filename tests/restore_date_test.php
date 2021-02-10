@@ -41,11 +41,11 @@ class mod_syllabus_restore_date_testcase extends restore_date_testcase {
 
         $time = 10000;
 
-        list($course, $resource) = $this->create_course_and_module('syllabus');
+        list($course, $syllabus) = $this->create_course_and_module('syllabus');
 
         // Do backup and restore.
         $newcourseid = $this->backup_and_restore($course);
-        $newresource = $DB->get_record('syllabus', ['course' => $newcourseid]);
-        $this->assertFieldsNotRolledForward($resource, $newresource, ['timemodified']);
+        $newsyllabus = $DB->get_record('syllabus', ['course' => $newcourseid]);
+        $this->assertFieldsNotRolledForward($syllabus, $newsyllabus, ['timemodified']);
     }
 }
