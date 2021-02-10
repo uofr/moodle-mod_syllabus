@@ -157,23 +157,23 @@ class mod_syllabus_external extends external_api {
             // Get the syllabi in this course, this function checks users visibility permissions.
             // We can avoid then additional validate_context calls.
             $syllabi = get_all_instances_in_courses("syllabus", $courses);
-            foreach ($syllabi as $resource) {
-                $context = context_module::instance($resource->coursemodule);
+            foreach ($syllabi as $syllabus) {
+                $context = context_module::instance($syllabus->coursemodule);
                 // Entry to return.
-                $resource->name = external_format_string($resource->name, $context->id);
+                $syllabus->name = external_format_string($syllabus->name, $context->id);
                 $options = array('noclean' => true);
-                list($resource->intro, $resource->introformat) =
-                    external_format_text($resource->intro, $resource->introformat, $context->id, 'mod_syllabus', 'intro', null,
+                list($syllabus->intro, $syllabus->introformat) =
+                    external_format_text($syllabus->intro, $syllabus->introformat, $context->id, 'mod_syllabus', 'intro', null,
                         $options);
-                $resource->introfiles = external_util::get_area_files($context->id, 'mod_syllabus', 'intro', false, false);
-                $resource->contentfiles = external_util::get_area_files($context->id, 'mod_syllabus', 'content');
+                $syllabus->introfiles = external_util::get_area_files($context->id, 'mod_syllabus', 'intro', false, false);
+                $syllabus->contentfiles = external_util::get_area_files($context->id, 'mod_syllabus', 'content');
 
-                $returnedresources[] = $resource;
+                $returnedsyllabi[] = $syllabus;
             }
         }
 
         $result = array(
-            'syllabus' => $returnedresources,
+            'syllabus' => $returnedsyllabi,
             'warnings' => $warnings
         );
         return $result;
@@ -192,10 +192,10 @@ class mod_syllabus_external extends external_api {
                 'syllabus' => new external_multiple_structure(
                     new external_single_structure(
                         array(
-                            'id' => new external_value(PARAM_INT, 'Module id'),
+                            'id' => new external_value(PARAM_INT, 'Syllabus id'),
                             'coursemodule' => new external_value(PARAM_INT, 'Course module id'),
                             'course' => new external_value(PARAM_INT, 'Course id'),
-                            'name' => new external_value(PARAM_RAW, 'Page name'),
+                            'name' => new external_value(PARAM_RAW, 'Syllabus name'),
                             'intro' => new external_value(PARAM_RAW, 'Summary'),
                             'introformat' => new external_format_value('intro', 'Summary format'),
                             'introfiles' => new external_files('Files in the introduction text'),

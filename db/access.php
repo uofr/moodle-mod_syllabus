@@ -47,7 +47,7 @@ $capabilities = array(
     ),
 
 /* TODO: review public portfolio API first!
-    'mod/resource:portfolioexport' => array(
+    'mod/syllabus:portfolioexport' => array(
 
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,

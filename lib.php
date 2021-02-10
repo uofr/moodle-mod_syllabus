@@ -471,10 +471,6 @@ function syllabus_dndupload_register() {
                  ));
 }
 
-/**
- * Handle a file that has been uploaded
- * @param object $uploadinfo details of the file / content that has been uploaded
- * @return int instance id of the newly created mod
 function syllabus_dndupload_handle($uploadinfo) {
     // Gather the required info.
     $data = new stdClass();
@@ -507,7 +503,7 @@ function syllabus_dndupload_handle($uploadinfo) {
  * @param  stdClass $course     course object
  * @param  stdClass $cm         course module object
  * @param  stdClass $context    context object
- * @since Moodle 3.0
+ * @since Moodle 3.9
  */
 function syllabus_view($syllabus, $course, $cm, $context) {
 

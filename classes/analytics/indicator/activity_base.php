@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
 abstract class activity_base extends \core_analytics\local\indicator\community_of_inquiry_activity {
 
     /**
-     * No need to fetch grades for resources.
+     * No need to fetch grades for syllabus.
      *
      * @param \core_analytics\course $course
      * @return void

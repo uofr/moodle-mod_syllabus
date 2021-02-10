@@ -27,7 +27,7 @@ namespace mod_syllabus\analytics\indicator;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Cognitive depth indicator - resource.
+ * Cognitive depth indicator - syllabus.
  *
  * @package   mod_syllabus
  * @copyright 2021 Marty Gilbert <martygilbert@gmail>
