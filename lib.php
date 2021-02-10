@@ -465,7 +465,6 @@ function syllabus_export_contents($cm, $baseurl) {
 /**
  * Register the ability to handle drag and drop file uploads
  * @return array containing details of the files / types the mod can handle
- */
 function syllabus_dndupload_register() {
     return array('files' => array(
                      array('extension' => '*', 'message' => get_string('dnduploadsyllabus', 'mod_syllabus'))
@@ -476,7 +475,6 @@ function syllabus_dndupload_register() {
  * Handle a file that has been uploaded
  * @param object $uploadinfo details of the file / content that has been uploaded
  * @return int instance id of the newly created mod
- */
 function syllabus_dndupload_handle($uploadinfo) {
     // Gather the required info.
     $data = new stdClass();
@@ -500,6 +498,7 @@ function syllabus_dndupload_handle($uploadinfo) {
 
     return syllabus_add_instance($data, null);
 }
+*/
 
 /**
  * Mark the activity completed (if required) and trigger the course_module_viewed event.
