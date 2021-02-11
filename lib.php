@@ -24,7 +24,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * List of features supported in Resource module
+ * List of features supported in Syllabus module
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed True if module supports feature, false if not, null if doesn't know
  */
