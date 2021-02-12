@@ -61,6 +61,7 @@ $PAGE->set_url('/mod/syllabus/view.php', array('id' => $cm->id));
 
 $fs = get_file_storage();
 $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
+//error_log(print_r($files, true));
 if (count($files) < 1) {
     syllabus_print_filenotfound($syllabus, $cm, $course);
     die;
@@ -70,6 +71,7 @@ if (count($files) < 1) {
 }
 
 $syllabus->mainfile = $file->get_filename();
+error_log(print_r($file, true));
 $displaytype = syllabus_get_final_display_type($syllabus);
 if ($displaytype == RESOURCELIB_DISPLAY_OPEN || $displaytype == RESOURCELIB_DISPLAY_DOWNLOAD) {
     $redirect = true;

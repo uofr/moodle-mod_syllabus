@@ -28,17 +28,17 @@ defined('MOODLE_INTERNAL') || die;
 $addons = [
     'mod_syllabus' => [
         'handlers' => [
-            'view' => [
+            'coursesyllabus' => [
                 'displaydata' => [
                     'icon' => $CFG->wwwroot . '/mod/syllabus/pix/icon.png',
                     'class' => '',
                 ],
 
-                'delegate' => 'CoreCourseModuleDelgate',
-                'method' => 'mobile_course_view',
+                'delegate' => 'CoreCourseModuleDelegate',
+                'method' => 'mobile_syllabus_view',
+                'isresource' => true,
                 'offlinefunctions' => [
-                    'mobile_course_view' => [],
-                    'mobile_issues_view' => [],
+                    'mobile_syllabus_view' => [],
                 ],
            ],
       ],
