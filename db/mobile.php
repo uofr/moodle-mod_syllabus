@@ -37,6 +37,7 @@ $addons = [
                 'delegate' => 'CoreCourseModuleDelegate',
                 'method' => 'mobile_syllabus_view',
                 'isresource' => true,
+                'downloadbutton' => true,
                 'offlinefunctions' => [
                     'mobile_syllabus_view' => [],
                 ],
