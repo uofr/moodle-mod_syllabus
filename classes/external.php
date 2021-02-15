@@ -46,7 +46,7 @@ class mod_syllabus_external extends external_api {
      * @since Moodle 3.9
      */
     public static function view_syllabus_parameters() {
-		error_log("syllabus parameters");
+        //error_log("syllabus parameters");
         return new external_function_parameters(
             array(
                 'syllabusid' => new external_value(PARAM_INT, 'syllabus instance id')
@@ -64,7 +64,7 @@ class mod_syllabus_external extends external_api {
      */
     public static function view_syllabus($syllabusid) {
         global $DB, $CFG;
-		error_log("view syllabus");
+        //error_log("view syllabus");
         require_once($CFG->dirroot . "/mod/syllabus/lib.php");
 
         $params = self::validate_parameters(self::view_syllabus_parameters(),
@@ -98,7 +98,7 @@ class mod_syllabus_external extends external_api {
      * @since Moodle 3.9
      */
     public static function view_syllabus_returns() {
-		error_log("view syllabus returns");
+        //error_log("view syllabus returns");
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),
@@ -114,7 +114,7 @@ class mod_syllabus_external extends external_api {
      * @since Moodle 3.9
      */
     public static function get_syllabus_by_courses_parameters() {
-		error_log("get syllabus by courses parameters");
+        //error_log("get syllabus by courses parameters");
         return new external_function_parameters (
             array(
                 'courseids' => new external_multiple_structure(
@@ -134,7 +134,7 @@ class mod_syllabus_external extends external_api {
      */
     public static function get_syllabus_by_courses($courseids = array()) {
 
-		error_log("get syllabus by courses");
+        //error_log("get syllabus by courses");
         $warnings = array();
         $returnedsyllabi = array();
 
@@ -186,7 +186,7 @@ class mod_syllabus_external extends external_api {
      * @since Moodle 3.9
      */
     public static function get_syllabus_by_courses_returns() {
-		error_log("get syllabus by courses returns");
+        //error_log("get syllabus by courses returns");
         return new external_single_structure(
             array(
                 'syllabus' => new external_multiple_structure(

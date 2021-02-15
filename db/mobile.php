@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,16 +16,35 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Resource module version information
+ * Syllabus for mobile
  *
  * @package    mod_syllabus
  * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2021021501;    // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2020060900;    // Requires this Moodle version
-$plugin->component = 'mod_syllabus'; // Full name of the plugin (used for diagnostics)
-$plugin->cron      = 0;
+$addons = [
+    'mod_syllabus' => [
+        'handlers' => [
+            'coursesyllabus' => [
+                'displaydata' => [
+                    'icon' => $CFG->wwwroot . '/mod/syllabus/pix/icon.png',
+                    'class' => '',
+                ],
+
+                'delegate' => 'CoreCourseModuleDelegate',
+                'method' => 'mobile_syllabus_view',
+                'isresource' => true,
+                'downloadbutton' => true,
+                'offlinefunctions' => [
+                    'mobile_syllabus_view' => [],
+                ],
+           ],
+      ],
+      'lang' => [
+        ['pluginname', 'syllabus'],
+      ],
+    ],
+];
