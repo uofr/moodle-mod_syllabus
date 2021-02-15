@@ -1,2 +1,2 @@
 {{=<% %>=}}
-    <button ion-button [core-download-file]="{fileurl: '<% file.fileurl %>', timemodified: '<% file.timemodified %>', filesize: '<% file.size %>'}" component="mod_syllabus" componentId="<% cm.id %>">Test</button>
+    <core-file [file]="{fileurl: '<% file.fileurl %>', filename: '<% file.filename %>', timemodified: '<% file.timemodified %>', filesize: '<% file.size %>'}" component="mod_syllabus" componentId="<% cm.id %>"></core-file>
