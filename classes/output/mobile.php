@@ -40,7 +40,6 @@ class mobile {
     
     public static function mobile_syllabus_view($args) {
         global $OUTPUT, $USER, $DB;
-        error_log ("mobile_syllabus_view");
 
         $args = (object) $args;
         $cm = get_coursemodule_from_id('syllabus', $args->cmid);
@@ -50,14 +49,9 @@ class mobile {
 
         require_capability ('mod/syllabus:view', $context);
 
-
-        $syllabus = $DB->get_record('syllabus', array('id' => $cm->instance), '*', MUST_EXIST);
-        //error_log("in mobile.php: " . print_r($syllabus, true));
-
         try {
+            // Mark it as viewed.
             $syllabi = mod_syllabus_external::view_syllabus($cm->instance);
-            //error_log("syllabi " . print_r($syllabi, true));
-
         } catch (Exception $e) {
             $issues = array();
         }
@@ -65,28 +59,21 @@ class mobile {
         $fs = get_file_storage();
         $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
         $file = reset($files);
-        unset($files);
+        //unset($files);
 
-        $syllabus->mainfile = $file->get_filename();
-        $path = '/'.$context->id.'/mod_syllabus/content/'.$syllabus->revision.$file->get_filepath().$file->get_filename();
-        $fullurl = \moodle_url::make_file_url('/pluginfile.php', $path, true);
-        
-        $thisfile = new \stdClass;
-        $thisfile->filename = $file->get_filename();
-        $thisfile->fileurl      = (string) $fullurl;
-        $thisfile->url      = (string) $fullurl;
-        $thisfile->name     = 'Just name';
-        $thisfile->timemodified = $syllabus->timemodified;
-        $thisfile->size     = 66829;
-        //error_log(print_r($file, true));
+        $fileurl = \moodle_url::make_webservice_pluginfile_url(
+                                        $context->id, 'mod_syllabus', 'content', 0,
+                                        $file->get_filepath(), $file->get_filename())->out(false);
+
+        $thisfile               = new \stdClass;
+        $thisfile->filename     = $file->get_filename();
+        $thisfile->fileurl      = $fileurl;
+        $thisfile->timemodified = $file->get_timemodified();
+        $thisfile->size         = $file->get_filesize();
 
         $data = array( 
             'file'  => $thisfile,
         );
-
-        //$thisfile = array_values($thisfile);
-
-        error_log(print_r($data, true));
 
         return [
             'templates' => [
@@ -96,8 +83,8 @@ class mobile {
                 ],
             ],
             'javascript' => '',
-            'otherdata' => 'test42',
-            'files' => $data,
+            //'otherdata' => 'test42',
+            'files' => '',//$data,
         ];
     }
 
