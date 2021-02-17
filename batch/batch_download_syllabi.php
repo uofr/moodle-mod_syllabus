@@ -60,18 +60,19 @@ foreach ($courses as $course) {
         $files = $fs->get_area_files($modcon->id, 'mod_syllabus', 'content', 0, 
             'sortorder DESC, id ASC', false);
         
-        // Assume only 1 file for now - TODO
-        $file = reset($files);
-        unset($files);
+		foreach ($files as $file) {
+        	$file = reset($files);
+	
+        	$content = $file->get_content();
+			//echo $file->get_filename()."\n";	
 
-        //$fromhash = $fs->get_file_by_hash($file->get_contenthash());
-
-        $content = $file->get_content();
-
-        make_path($newpath);
-        file_put_contents($newpath . '/' . $counter.'_'.$fn, $content);
-
-        $counter++;
+        	make_path($newpath);
+			$fn = sprintf("%03d", $counter) . '_' . $fn;
+			$fn .= '_' . preg_replace("/[^A-Za-z0-9\.-]/", '', $file->get_filename());
+        	file_put_contents($newpath . '/' . $fn, $content);
+        	$counter++;
+		}
+	
     }
 
 
