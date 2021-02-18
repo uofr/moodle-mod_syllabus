@@ -49,7 +49,7 @@ foreach ($courses as $course) {
 
     $newpath = $dest . '/' . $catpath;
 
-    $syllabi = get_all_instances_in_course('syllabus', $course, NULL, ture);
+    $syllabi = get_all_instances_in_course('syllabus', $course, NULL, true);
 
     $fn = $course->shortname;
     
@@ -60,19 +60,19 @@ foreach ($courses as $course) {
         $files = $fs->get_area_files($modcon->id, 'mod_syllabus', 'content', 0, 
             'sortorder DESC, id ASC', false);
         
-		foreach ($files as $file) {
-        	$file = reset($files);
-	
-        	$content = $file->get_content();
-			//echo $file->get_filename()."\n";	
+        foreach ($files as $file) {
+            $file = reset($files);
+    
+            $content = $file->get_content();
+            //echo $file->get_filename()."\n";  
 
-        	make_path($newpath);
-			$fn = sprintf("%03d", $counter) . '_' . $fn;
-			$fn .= '_' . preg_replace("/[^A-Za-z0-9\.-]/", '', $file->get_filename());
-        	file_put_contents($newpath . '/' . $fn, $content);
-        	$counter++;
-		}
-	
+            make_path($newpath);
+            $fn = sprintf("%03d", $counter) . '_' . $fn;
+            $fn .= '_' . preg_replace("/[^A-Za-z0-9\.-]/", '', $file->get_filename());
+            file_put_contents($newpath . '/' . $fn, $content);
+            $counter++;
+        }
+    
     }
 
 
