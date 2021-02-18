@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Resource module version information
+ * A scheduled task for syllabus cron.
  *
  * @package    mod_syllabus
  * @copyright  2021 Marty Gilbert <martygilbert@gmail>
@@ -24,7 +24,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2021021803;    // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2020060900;    // Requires this Moodle version
-$plugin->component = 'mod_syllabus'; // Full name of the plugin (used for diagnostics)
-$plugin->cron      = 0;
+$tasks = [
+    [
+        'classname' => 'mod_syllabus\task\send_reminder_email',
+        'blocking'  => 0,
+        'minute'    => 'R',
+        'hour'      => '2',
+        'day'       => '*',
+        'month'     => '*',
+        'dayofweek' => '1',
+    ],
+];

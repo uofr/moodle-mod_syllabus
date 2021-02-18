@@ -122,4 +122,36 @@ If there are multiple files in this syllabus, the start file type is displayed.
 
 If the file type is not known to the system, it will not display.';
 $string['uploadeddate'] = 'Uploaded {$a}';
+
+// Added by MJG
 $string['selectfile'] = 'Select syllabus file';
+$string['reminderemail'] = 'Send reminder to upload syllabus';
+$string['uniquecategoryname'] = 'Category name';
+$string['configuniquecategoryname'] = 'The category name to check recursively. If blank,
+will check the entire site.';
+$string['emailstohidden']   = 'Send reminders to hidden courses';
+$string['configemailstohidden'] = 'If a course is hidden, still send a reminder email about missing a syllabus';
+$string['taskreminderemailsettings'] = 'Reminder email task settings';
+$string['confreminderemail'] = 'Settings that affect the remdiner email scheduled task';
+$string['enablereminders'] = 'Enable reminder emails';
+$string['configenablereminders'] = 'If enabled, will send email reminders to teachers that
+don\'t have a Syllabus activity in their courses.';
+$string['addsyllabuslink'] = 'Add a syllabus documentation';
+$string['configaddsyllabuslink'] = 'URL of the training documentaion that explains how a teacher would add a syllabus.
+If this is blank, the relevant language is left out of the reminder emails.';
+
+// For reminder emails.
+$string['emailsubj'] = 'Reminder - Post a Syllabus in Your Course';
+$string['emailgreeting'] = 'Hello -';
+$string['emailintro'] = 
+'This is an automated email to notify you that one or more of your 
+courses lack a Syllabus Resource. Here is a list of the course(s) in question:';
+$string['emailtraining'] = 'If you would like more information, please view the <a href="{a}">documentation on how to add a Syllabus Resource to your course</a>';
+$string['emailclosing'] = 
+'<p>If you have any questions, please contact your department chair or division dean.</p>
+
+<p>Thanks in advance for your attention to this matter,</p>
+
+<p>Moodle Administrator<br>
+moodleadmin@mhu.edu</p>';
+

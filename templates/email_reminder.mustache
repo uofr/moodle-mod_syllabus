@@ -1,0 +1,41 @@
+{{!
+    This file is part of Moodle - http://moodle.org/                                                                                
+
+    Moodle is free software: you can redistribute it and/or modify                                                                  
+    it under the terms of the GNU General Public License as published by                                                            
+    the Free Software Foundation, either version 3 of the License, or                                                               
+    (at your option) any later version.                                                                                             
+
+    Moodle is distributed in the hope that it will be useful,                                                                       
+    but WITHOUT ANY WARRANTY; without even the implied warranty of                                                                  
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                                                                   
+    GNU General Public License for more details.                                                                                    
+
+    You should have received a copy of the GNU General Public License                                                               
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.       
+
+}}
+{{!
+    @template   mod_syllabus/email_reminder
+    @copyright  Marty Gilbert <martygilbert@gmail>
+
+    Template for emailing teachers about missing syllabi
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+}}
+<p>{{#str}}emailgreeting, mod_syllabus{{/str}}</p>
+<p>{{#str}}emailintro, mod_syllabus{{/str}}</p>
+<ul>
+{{#courses}}
+    <li><a href="{{url}}">{{shortname}}</a></li> 
+{{/courses}}
+</ul>
+{{#docurl}}<p>{{#str}}emailtraining, mod_syllabus, {{docurl}}{{/str}}</p>{{/docurl}}
+{{#str}}emailclosing, mod_syllabus{{/str}}
+
+
