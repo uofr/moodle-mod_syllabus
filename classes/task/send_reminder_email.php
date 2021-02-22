@@ -68,10 +68,12 @@ class send_reminder_email extends \core\task\scheduled_task {
         mtrace("Preparing to process category id: $catid");
 
         $coursecat = \core_course_category::get($catid);
-        $courses = $coursecat->get_courses(array('recursive' => true));
+        $courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
+        //error_log(var_dump($courses));
 
         $now = time();
-        foreach ($courses as $course) {
+        foreach ($courses as $courseid) {
+            $course = get_course($courseid);
             $syllabi = get_all_instances_in_course('syllabus', $course, null, true);
 
             if (count($syllabi) == 0 && $course->startdate < $now && $course->enddate > $now) {
