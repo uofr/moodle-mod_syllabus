@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -41,10 +40,10 @@ $addons = [
                 'offlinefunctions' => [
                     'mobile_syllabus_view' => [],
                 ],
-           ],
-      ],
-      'lang' => [
-        ['pluginname', 'syllabus'],
-      ],
+            ],
+        ],
+        'lang' => [
+            ['pluginname', 'syllabus'],
+        ],
     ],
 ];

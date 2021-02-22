@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -44,32 +43,34 @@ if ($ADMIN->fulltree) {
                                   );
 
 
-    //--- general settings -----------------------------------------------------------------------------------
+    // --- general settings -----------------------------------------------------------------------------------
     $settings->add(new admin_setting_configtext('syllabus/framesize',
         get_string('framesize', 'syllabus'), get_string('configframesize', 'syllabus'), 130, PARAM_INT));
     $settings->add(new admin_setting_configmultiselect('syllabus/displayoptions',
         get_string('displayoptions', 'syllabus'), get_string('configdisplayoptions', 'syllabus'),
         $defaultdisplayoptions, $displayoptions));
 
-    //--- reminder email task settings -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_heading('syllabusmodtaskreminderemail', get_string('taskreminderemailsettings', 'syllabus'), get_string('confreminderemail', 'syllabus')));
+    // --- reminder email task settings -----------------------------------------------------------------------------------
+    $settings->add(new admin_setting_heading('syllabusmodtaskreminderemail',
+        get_string('taskreminderemailsettings', 'syllabus'), get_string('confreminderemail', 'syllabus')));
 
-    // task enabled?
+    // Task enabled?
     $settings->add(new admin_setting_configcheckbox('syllabus/remindersenabled',
         get_string('enablereminders', 'syllabus'), get_string('configenablereminders', 'syllabus'), 1));
-    // emails to hidden?
+    // Emails to hidden?
     $settings->add(new admin_setting_configcheckbox('syllabus/emailstohidden',
         get_string('emailstohidden', 'syllabus'), get_string('configemailstohidden', 'syllabus'), 1));
-    // category to process
+    // Category to process.
     $settings->add(new admin_setting_configtext('syllabus/uniquecatname',
         get_string('uniquecategoryname', 'syllabus'), get_string('configuniquecategoryname', 'syllabus'), '', PARAM_ALPHA));
-    // Link to HowTo Add A Syllabus documentation
+    // Link to HowTo Add A Syllabus documentation.
     $settings->add(new admin_setting_configtext('syllabus/addsyllabuslink',
         get_string('addsyllabuslink', 'syllabus'), get_string('configaddsyllabuslink', 'syllabus'), '', PARAM_URL));
 
 
-    //--- modedit defaults -----------------------------------------------------------------------------------
-    $settings->add(new admin_setting_heading('syllabusmodeditdefaults', get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
+    // --- modedit defaults -----------------------------------------------------------------------------------
+    $settings->add(new admin_setting_heading('syllabusmodeditdefaults',
+        get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
 
     $settings->add(new admin_setting_configcheckbox('syllabus/printintro',
         get_string('printintro', 'syllabus'), get_string('printintroexplain', 'syllabus'), 1));

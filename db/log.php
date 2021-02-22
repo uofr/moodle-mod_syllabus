@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
-    array('module'=>'syllabus', 'action'=>'view', 'mtable'=>'syllabus', 'field'=>'name'),
-    array('module'=>'syllabus', 'action'=>'view all', 'mtable'=>'syllabus', 'field'=>'name'),
-    array('module'=>'syllabus', 'action'=>'update', 'mtable'=>'syllabus', 'field'=>'name'),
-    array('module'=>'syllabus', 'action'=>'add', 'mtable'=>'syllabus', 'field'=>'name'),
+    array('module' => 'syllabus', 'action' => 'view', 'mtable' => 'syllabus', 'field' => 'name'),
+    array('module' => 'syllabus', 'action' => 'view all', 'mtable' => 'syllabus', 'field' => 'name'),
+    array('module' => 'syllabus', 'action' => 'update', 'mtable' => 'syllabus', 'field' => 'name'),
+    array('module' => 'syllabus', 'action' => 'add', 'mtable' => 'syllabus', 'field' => 'name'),
 );

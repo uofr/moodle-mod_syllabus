@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -123,7 +122,7 @@ If there are multiple files in this syllabus, the start file type is displayed.
 If the file type is not known to the system, it will not display.';
 $string['uploadeddate'] = 'Uploaded {$a}';
 
-// Added by MJG
+// Added by MJG.
 $string['selectfile'] = 'Select syllabus file';
 $string['reminderemail'] = 'Send reminder to upload syllabus';
 $string['uniquecategoryname'] = 'Category name';
@@ -143,12 +142,9 @@ If this is blank, the relevant language is left out of the reminder emails.';
 // For reminder emails.
 $string['emailsubj'] = 'Reminder - Post a Syllabus in Your Course';
 $string['emailgreeting'] = 'Hello -';
-$string['emailintro'] = 
-'This is an automated email to notify you that one or more of your 
-courses lack a Syllabus Resource. Here is a list of the course(s) in question:';
+$string['emailintro'] = 'This is an automated email to notify you that one or more of your courses lack a Syllabus Resource. Here is a list of the course(s) in question:';
 $string['emailtraining'] = 'If you would like more information, please view the <a href="{a}">documentation on how to add a Syllabus Resource to your course</a>';
-$string['emailclosing'] = 
-'<p>If you have any questions, please contact your department chair or division dean.</p>
+$string['emailclosing'] = '<p>If you have any questions, please contact your department chair or division dean.</p>
 
 <p>Thanks in advance for your attention to this matter,</p>
 

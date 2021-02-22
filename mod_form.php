@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,15 +29,15 @@ require_once($CFG->dirroot.'/mod/syllabus/locallib.php');
 require_once($CFG->libdir.'/filelib.php');
 
 class mod_syllabus_mod_form extends moodleform_mod {
-    function definition() {
+    public function definition() {
         global $CFG, $DB;
         $mform =& $this->_form;
 
         $config = get_config('syllabus');
 
-        //-------------------------------------------------------
+        // -------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
-        $mform->addElement('text', 'name', get_string('name'), array('size'=>'48'));
+        $mform->addElement('text', 'name', get_string('name'), array('size' => '48'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -51,23 +50,23 @@ class mod_syllabus_mod_form extends moodleform_mod {
         $attributes = $element->getAttributes();
         $attributes['rows'] = 5;
         $element->setAttributes($attributes);
-        $filemanager_options = array();
-        $filemanager_options['accepted_types'] = '*';
-        $filemanager_options['maxbytes'] = 0;
-        $filemanager_options['maxfiles'] = 1;
-        $filemanager_options['mainfile'] = true;
-        $filemanager_options['subdirs'] = 0;
+        fmoptions = array();
+        fmoptions['accepted_types'] = '*';
+        fmoptions['maxbytes'] = 0;
+        fmoptions['maxfiles'] = 1;
+        fmoptions['mainfile'] = true;
+        fmoptions['subdirs'] = 0;
 
-        $mform->addElement('filemanager', 'files', get_string('selectfile', 'syllabus'), null, $filemanager_options);
+        $mform->addElement('filemanager', 'files', get_string('selectfile', 'syllabus'), null, fmoptions);
 
-        // add legacy files flag only if used
+        // Add legacy files flag only if used.
         if (isset($this->current->legacyfiles) and $this->current->legacyfiles != RESOURCELIB_LEGACYFILES_NO) {
             $options = array(RESOURCELIB_LEGACYFILES_DONE   => get_string('legacyfilesdone', 'syllabus'),
                              RESOURCELIB_LEGACYFILES_ACTIVE => get_string('legacyfilesactive', 'syllabus'));
             $mform->addElement('select', 'legacyfiles', get_string('legacyfiles', 'syllabus'), $options);
         }
 
-        //-------------------------------------------------------
+        // -------------------------------------------------------
         $mform->addElement('header', 'optionssection', get_string('appearance'));
 
         if ($this->current->instance) {
@@ -98,7 +97,7 @@ class mod_syllabus_mod_form extends moodleform_mod {
         $mform->addHelpButton('showdate', 'showdate', 'syllabus');
 
         if (array_key_exists(RESOURCELIB_DISPLAY_POPUP, $options)) {
-            $mform->addElement('text', 'popupwidth', get_string('popupwidth', 'syllabus'), array('size'=>3));
+            $mform->addElement('text', 'popupwidth', get_string('popupwidth', 'syllabus'), array('size' => 3));
             if (count($options) > 1) {
                 $mform->hideIf('popupwidth', 'display', 'noteq', RESOURCELIB_DISPLAY_POPUP);
             }
@@ -106,7 +105,7 @@ class mod_syllabus_mod_form extends moodleform_mod {
             $mform->setDefault('popupwidth', $config->popupwidth);
             $mform->setAdvanced('popupwidth', true);
 
-            $mform->addElement('text', 'popupheight', get_string('popupheight', 'syllabus'), array('size'=>3));
+            $mform->addElement('text', 'popupheight', get_string('popupheight', 'syllabus'), array('size' => 3));
             if (count($options) > 1) {
                 $mform->hideIf('popupheight', 'display', 'noteq', RESOURCELIB_DISPLAY_POPUP);
             }
@@ -131,65 +130,65 @@ class mod_syllabus_mod_form extends moodleform_mod {
         $mform->setDefault('filterfiles', $config->filterfiles);
         $mform->setAdvanced('filterfiles', true);
 
-        //-------------------------------------------------------
+        // -------------------------------------------------------
         $this->standard_coursemodule_elements();
 
-        //-------------------------------------------------------
+        // -------------------------------------------------------
         $this->add_action_buttons();
 
-        //-------------------------------------------------------
+        // -------------------------------------------------------
         $mform->addElement('hidden', 'revision');
         $mform->setType('revision', PARAM_INT);
         $mform->setDefault('revision', 1);
     }
 
-    function data_preprocessing(&$default_values) {
+    public function data_preprocessing(&$defaultvalues) {
         if ($this->current->instance and !$this->current->tobemigrated) {
             $draftitemid = file_get_submitted_draft_itemid('files');
-            file_prepare_draft_area($draftitemid, $this->context->id, 'mod_syllabus', 'content', 0, array('subdirs'=>true));
-            $default_values['files'] = $draftitemid;
+            file_prepare_draft_area($draftitemid, $this->context->id, 'mod_syllabus', 'content', 0, array('subdirs' => true));
+            $defaultvalues['files'] = $draftitemid;
         }
-        if (!empty($default_values['displayoptions'])) {
-            $displayoptions = unserialize($default_values['displayoptions']);
+        if (!empty($defaultvalues['displayoptions'])) {
+            $displayoptions = unserialize($defaultvalues['displayoptions']);
             if (isset($displayoptions['printintro'])) {
-                $default_values['printintro'] = $displayoptions['printintro'];
+                $defaultvalues['printintro'] = $displayoptions['printintro'];
             }
             if (!empty($displayoptions['popupwidth'])) {
-                $default_values['popupwidth'] = $displayoptions['popupwidth'];
+                $defaultvalues['popupwidth'] = $displayoptions['popupwidth'];
             }
             if (!empty($displayoptions['popupheight'])) {
-                $default_values['popupheight'] = $displayoptions['popupheight'];
+                $defaultvalues['popupheight'] = $displayoptions['popupheight'];
             }
             if (!empty($displayoptions['showsize'])) {
-                $default_values['showsize'] = $displayoptions['showsize'];
+                $defaultvalues['showsize'] = $displayoptions['showsize'];
             } else {
                 // Must set explicitly to 0 here otherwise it will use system
                 // default which may be 1.
-                $default_values['showsize'] = 0;
+                $defaultvalues['showsize'] = 0;
             }
             if (!empty($displayoptions['showtype'])) {
-                $default_values['showtype'] = $displayoptions['showtype'];
+                $defaultvalues['showtype'] = $displayoptions['showtype'];
             } else {
-                $default_values['showtype'] = 0;
+                $defaultvalues['showtype'] = 0;
             }
             if (!empty($displayoptions['showdate'])) {
-                $default_values['showdate'] = $displayoptions['showdate'];
+                $defaultvalues['showdate'] = $displayoptions['showdate'];
             } else {
-                $default_values['showdate'] = 0;
+                $defaultvalues['showdate'] = 0;
             }
         }
     }
 
-    function definition_after_data() {
+    public function definition_after_data() {
         if ($this->current->instance and $this->current->tobemigrated) {
-            // syllabus not migrated yet
+            // Syllabus not migrated yet.
             return;
         }
 
         parent::definition_after_data();
     }
 
-    function validation($data, $files) {
+    public function validation($data, $files) {
         global $USER;
 
         $errors = parent::validation($data, $files);
@@ -201,17 +200,17 @@ class mod_syllabus_mod_form extends moodleform_mod {
             return $errors;
         }
         if (count($files) == 1) {
-            // no need to select main file if only one picked
+            // No need to select main file if only one picked.
             return $errors;
-        } else if(count($files) > 1) {
+        } else if (count($files) > 1) {
             $mainfile = false;
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 if ($file->get_sortorder() == 1) {
                     $mainfile = true;
                     break;
                 }
             }
-            // set a default main file
+            // Set a default main file.
             if (!$mainfile) {
                 $file = reset($files);
                 file_set_sortorder($file->get_contextid(), $file->get_component(), $file->get_filearea(), $file->get_itemid(),
