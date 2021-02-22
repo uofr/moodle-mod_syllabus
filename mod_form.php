@@ -50,14 +50,14 @@ class mod_syllabus_mod_form extends moodleform_mod {
         $attributes = $element->getAttributes();
         $attributes['rows'] = 5;
         $element->setAttributes($attributes);
-        fmoptions = array();
-        fmoptions['accepted_types'] = '*';
-        fmoptions['maxbytes'] = 0;
-        fmoptions['maxfiles'] = 1;
-        fmoptions['mainfile'] = true;
-        fmoptions['subdirs'] = 0;
+        $fmoptions = array();
+        $fmoptions['accepted_types'] = '*';
+        $fmoptions['maxbytes'] = 0;
+        $fmoptions['maxfiles'] = 1;
+        $fmoptions['mainfile'] = true;
+        $fmoptions['subdirs'] = 0;
 
-        $mform->addElement('filemanager', 'files', get_string('selectfile', 'syllabus'), null, fmoptions);
+        $mform->addElement('filemanager', 'files', get_string('selectfile', 'syllabus'), null, $fmoptions);
 
         // Add legacy files flag only if used.
         if (isset($this->current->legacyfiles) and $this->current->legacyfiles != RESOURCELIB_LEGACYFILES_NO) {
