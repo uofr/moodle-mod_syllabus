@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -37,24 +36,6 @@ require_once("$CFG->dirroot/mod/syllabus/lib.php");
  * @return void
  */
 
- /*
-function syllabus_redirect_if_migrated($oldid, $cmid) {
-    global $DB, $CFG;
-
-    if ($oldid) {
-        $old = $DB->get_record('resource_old', array('oldid'=>$oldid));
-    } else {
-        $old = $DB->get_record('resource_old', array('cmid'=>$cmid));
-    }
-
-    if (!$old) {
-        return;
-    }
-
-    redirect("$CFG->wwwroot/mod/$old->newmodule/view.php?id=".$old->cmid);
-}
-*/
-
 /**
  * Display embedded syllabus file.
  * @param object $syllabus
@@ -83,11 +64,11 @@ function syllabus_display_embed($syllabus, $cm, $course, $file) {
         core_media_manager::OPTION_BLOCK => true,
     );
 
-    if (file_mimetype_in_typegroup($mimetype, 'web_image')) {  // It's an image
+    if (file_mimetype_in_typegroup($mimetype, 'web_image')) {  // It's an image.
         $code = resourcelib_embed_image($moodleurl->out(), $title);
 
     } else if ($mimetype === 'application/pdf') {
-        // PDF document
+        // PDF document.
         $code = resourcelib_embed_pdf($moodleurl->out(), $title, $clicktoopen);
 
     } else if ($mediamanager->can_embed_url($moodleurl, $embedoptions)) {
@@ -98,7 +79,7 @@ function syllabus_display_embed($syllabus, $cm, $course, $file) {
         // We need a way to discover if we are loading remote docs inside an iframe.
         $moodleurl->param('embed', 1);
 
-        // anything else - just try object tag enlarged as much as possible
+        // Anything else - just try object tag enlarged as much as possible.
         $code = resourcelib_embed_general($moodleurl, $title, $clicktoopen, $mimetype);
     }
 
@@ -143,7 +124,7 @@ function syllabus_display_frame($syllabus, $cm, $course, $file) {
         $title = strip_tags(format_string($course->shortname.': '.$syllabus->name));
         $framesize = $config->framesize;
         $contentframetitle = s(format_string($syllabus->name));
-        $modulename = s(get_string('modulename','syllabus'));
+        $modulename = s(get_string('modulename', 'syllabus'));
         $dir = get_string('thisdirection', 'langconfig');
 
         $file = <<<EOF
@@ -215,10 +196,11 @@ function syllabus_print_workaround($syllabus, $cm, $course, $file) {
     echo '<div class="resourceworkaround">';
     switch (syllabus_get_final_display_type($syllabus)) {
         case RESOURCELIB_DISPLAY_POPUP:
-            $path = '/'.$file->get_contextid().'/mod_syllabus/content/'.$syllabus->revision.$file->get_filepath().$file->get_filename();
+            $path = '/'.$file->get_contextid().'/mod_syllabus/content/'.$syllabus->revision.
+                $file->get_filepath().$file->get_filename();
             $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
             $options = empty($syllabus->displayoptions) ? array() : unserialize($syllabus->displayoptions);
-            $width  = empty($options['popupwidth'])  ? 620 : $options['popupwidth'];
+            $width  = empty($options['popupwidth']) ? 620 : $options['popupwidth'];
             $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
             $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
             $extra = "onclick=\"window.open('$fullurl', '', '$wh'); return false;\"";
@@ -417,7 +399,7 @@ function syllabus_print_intro($syllabus, $cm, $course, $ignoresettings=false) {
 
     $extraintro = syllabus_get_optional_details($syllabus, $cm);
     if ($extraintro) {
-        // Put a paragaph tag around the details
+        // Put a paragaph tag around the details.
         $extraintro = html_writer::tag('p', $extraintro, array('class' => 'syllabusdetails'));
     }
 
@@ -443,8 +425,6 @@ function syllabus_print_intro($syllabus, $cm, $course, $ignoresettings=false) {
  */
 function syllabus_print_filenotfound($syllabus, $cm, $course) {
     global $DB, $OUTPUT;
-
-    //$resource_old = $DB->get_record('resource_old', array('oldid'=>$resource->id));
 
     syllabus_print_header($syllabus, $cm, $course);
     syllabus_print_heading($syllabus, $cm, $course);
@@ -480,7 +460,7 @@ function syllabus_get_final_display_type($syllabus) {
         return RESOURCELIB_DISPLAY_EMBED;
     }
 
-    // let the browser deal with it somehow
+    // Let the browser deal with it somehow.
     return RESOURCELIB_DISPLAY_OPEN;
 }
 
@@ -518,7 +498,7 @@ function syllabus_set_mainfile($data) {
     }
     $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0, 'sortorder', false);
     if (count($files) == 1) {
-        // only one file attached, set it as main file automatically
+        // Only one file attached, set it as main file automatically.
         $file = reset($files);
         file_set_sortorder($context->id, 'mod_syllabus', 'content', 0, $file->get_filepath(), $file->get_filename(), 1);
     }

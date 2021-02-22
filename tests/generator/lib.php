@@ -79,9 +79,9 @@ class mod_syllabus_generator extends testing_module_generator {
             // Add actual file there.
             $filerecord = array('component' => 'user', 'filearea' => 'draft',
                     'contextid' => $usercontext->id, 'itemid' => $record->files,
-                    'filename' => 'resource' . ($this->instancecount+1) . '.txt', 'filepath' => '/');
+                    'filename' => 'resource' . ($this->instancecount + 1) . '.txt', 'filepath' => '/');
             $fs = get_file_storage();
-            $fs->create_file_from_string($filerecord, 'Test resource ' . ($this->instancecount+1) . ' file');
+            $fs->create_file_from_string($filerecord, 'Test resource ' . ($this->instancecount + 1) . ' file');
         }
 
         // Do work to actually add the instance.

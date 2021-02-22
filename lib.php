@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -68,7 +67,7 @@ function syllabus_reset_userdata($data) {
  * @return array
  */
 function syllabus_get_view_actions() {
-    return array('view','view all');
+    return array('view', 'view all');
 }
 
 /**
@@ -102,8 +101,8 @@ function syllabus_add_instance($data, $mform) {
 
     $data->id = $DB->insert_record('syllabus', $data);
 
-    // we need to use context now, so we need to make sure all needed info is already in db
-    $DB->set_field('course_modules', 'instance', $data->id, array('id'=>$cmid));
+    // We need to use context now, so we need to make sure all needed info is already in db.
+    $DB->set_field('course_modules', 'instance', $data->id, array('id' => $cmid));
     syllabus_set_mainfile($data);
 
     $completiontimeexpected = !empty($data->completionexpected) ? $data->completionexpected : null;
@@ -172,16 +171,16 @@ function syllabus_set_display_options($data) {
 function syllabus_delete_instance($id) {
     global $DB;
 
-    if (!$syllabus = $DB->get_record('syllabus', array('id'=>$id))) {
+    if (!$syllabus = $DB->get_record('syllabus', array('id' => $id))) {
         return false;
     }
 
     $cm = get_coursemodule_from_instance('syllabus', $id);
     \core_completion\api::update_completion_date_event($cm->id, 'syllabus', $id, null);
 
-    // note: all context files are deleted automatically
+    // Note: all context files are deleted automatically.
 
-    $DB->delete_records('syllabus', array('id'=>$syllabus->id));
+    $DB->delete_records('syllabus', array('id' => $syllabus->id));
 
     return true;
 }
@@ -204,9 +203,9 @@ function syllabus_get_coursemodule_info($coursemodule) {
 
     $context = context_module::instance($coursemodule->id);
 
-    if (!$syllabus = $DB->get_record('syllabus', array('id'=>$coursemodule->instance),
+    if (!$syllabus = $DB->get_record('syllabus', array('id' => $coursemodule->instance),
             'id, name, display, displayoptions, tobemigrated, revision, intro, introformat')) {
-        return NULL;
+        return null;
     }
 
     $info = new cached_cm_info();
@@ -230,7 +229,7 @@ function syllabus_get_coursemodule_info($coursemodule) {
     if ($display == RESOURCELIB_DISPLAY_POPUP) {
         $fullurl = "$CFG->wwwroot/mod/syllabus/view.php?id=$coursemodule->id&amp;redirect=1";
         $options = empty($syllabus->displayoptions) ? array() : unserialize($syllabus->displayoptions);
-        $width  = empty($options['popupwidth'])  ? 620 : $options['popupwidth'];
+        $width  = empty($options['popupwidth']) ? 620 : $options['popupwidth'];
         $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
         $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
         $info->onclick = "window.open('$fullurl', '', '$wh'); return false;";
@@ -309,7 +308,7 @@ function syllabus_get_file_info($browser, $areas, $course, $cm, $context, $filea
     global $CFG;
 
     if (!has_capability('moodle/course:managefiles', $context)) {
-        // students can not peak here!
+        // Students can not peak here!
         return null;
     }
 
@@ -324,15 +323,16 @@ function syllabus_get_file_info($browser, $areas, $course, $cm, $context, $filea
             if ($filepath === '/' and $filename === '.') {
                 $storedfile = new virtual_root_file($context->id, 'mod_syllabus', 'content', 0);
             } else {
-                // not found
+                // Not found.
                 return null;
             }
         }
         require_once("$CFG->dirroot/mod/syllabus/locallib.php");
-        return new syllabus_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
+        return new syllabus_content_file_info($browser, $context, $storedfile,
+            $urlbase, $areas[$filearea], true, true, true, false);
     }
 
-    // note: syllabus_intro handled in file_browser automatically
+    // Note: syllabus_intro handled in file_browser automatically.
 
     return null;
 }
@@ -365,11 +365,11 @@ function syllabus_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
     }
 
     if ($filearea !== 'content') {
-        // intro is handled automatically in pluginfile.php
+        // Intro is handled automatically in pluginfile.php.
         return false;
     }
 
-    array_shift($args); // ignore revision - designed to prevent caching problems only
+    array_shift($args); // Ignore revision - designed to prevent caching problems only.
 
     $fs = get_file_storage();
     $relativepath = implode('/', $args);
@@ -387,29 +387,29 @@ function syllabus_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
                     break;
                 }
             }
-            $syllabus = $DB->get_record('syllabus', array('id'=>$cm->instance), 'id, legacyfiles', MUST_EXIST);
+            $syllabus = $DB->get_record('syllabus', array('id' => $cm->instance), 'id, legacyfiles', MUST_EXIST);
             if ($syllabus->legacyfiles != RESOURCELIB_LEGACYFILES_ACTIVE) {
                 return false;
             }
             if (!$file = resourcelib_try_file_migration('/'.$relativepath, $cm->id, $cm->course, 'mod_syllabus', 'content', 0)) {
                 return false;
             }
-            // file migrate - update flag
+            // File migrate - update flag.
             $syllabus->legacyfileslast = time();
             $DB->update_record('syllabus', $syllabus);
         }
     } while (false);
 
-    // should we apply filters?
+    // Should we apply filters?
     $mimetype = $file->get_mimetype();
     if ($mimetype === 'text/html' or $mimetype === 'text/plain' or $mimetype === 'application/xhtml+xml') {
-        $filter = $DB->get_field('syllabus', 'filterfiles', array('id'=>$cm->instance));
+        $filter = $DB->get_field('syllabus', 'filterfiles', array('id' => $cm->instance));
         $CFG->embeddedsoforcelinktarget = true;
     } else {
         $filter = 0;
     }
 
-    // finally send the file
+    // Finally, send the file.
     send_stored_file($file, null, $filter, $forcedownload, $options);
 }
 
@@ -420,8 +420,8 @@ function syllabus_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
  * @param stdClass $currentcontext Current context of block
  */
 function syllabus_page_type_list($pagetype, $parentcontext, $currentcontext) {
-    $module_pagetype = array('mod-syllabus-*'=>get_string('page-mod-syllabus-x', 'syllabus'));
-    return $module_pagetype;
+    $pagetype = array('mod-syllabus-*' => get_string('page-mod-syllabus-x', 'syllabus'));
+    return $pagetype;
 }
 
 /**
@@ -433,7 +433,7 @@ function syllabus_export_contents($cm, $baseurl) {
     global $CFG, $DB;
     $contents = array();
     $context = context_module::instance($cm->id);
-    $syllabus = $DB->get_record('syllabus', array('id'=>$cm->instance), '*', MUST_EXIST);
+    $syllabus = $DB->get_record('syllabus', array('id' => $cm->instance), '*', MUST_EXIST);
 
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0, 'sortorder DESC, id ASC', false);
@@ -444,7 +444,8 @@ function syllabus_export_contents($cm, $baseurl) {
         $file['filename']     = $fileinfo->get_filename();
         $file['filepath']     = $fileinfo->get_filepath();
         $file['filesize']     = $fileinfo->get_filesize();
-        $file['fileurl']      = file_encode_url("$CFG->wwwroot/" . $baseurl, '/'.$context->id.'/mod_syllabus/content/'.$syllabus->revision.$fileinfo->get_filepath().$fileinfo->get_filename(), true);
+        $file['fileurl']      = file_encode_url("$CFG->wwwroot/" . $baseurl, '/'.$context->id.'/mod_syllabus/content/'.
+            $syllabus->revision.$fileinfo->get_filepath().$fileinfo->get_filename(), true);
         $file['timecreated']  = $fileinfo->get_timecreated();
         $file['timemodified'] = $fileinfo->get_timemodified();
         $file['sortorder']    = $fileinfo->get_sortorder();
@@ -461,40 +462,6 @@ function syllabus_export_contents($cm, $baseurl) {
 
     return $contents;
 }
-
-/**
- * Register the ability to handle drag and drop file uploads
- * @return array containing details of the files / types the mod can handle
-function syllabus_dndupload_register() {
-    return array('files' => array(
-                     array('extension' => '*', 'message' => get_string('dnduploadsyllabus', 'mod_syllabus'))
-                 ));
-}
-
-function syllabus_dndupload_handle($uploadinfo) {
-    // Gather the required info.
-    $data = new stdClass();
-    $data->course = $uploadinfo->course->id;
-    $data->name = $uploadinfo->displayname;
-    $data->intro = '';
-    $data->introformat = FORMAT_HTML;
-    $data->coursemodule = $uploadinfo->coursemodule;
-    $data->files = $uploadinfo->draftitemid;
-
-    // Set the display options to the site defaults.
-    $config = get_config('syllabus');
-    $data->display = $config->display;
-    $data->popupheight = $config->popupheight;
-    $data->popupwidth = $config->popupwidth;
-    $data->printintro = $config->printintro;
-    $data->showsize = (isset($config->showsize)) ? $config->showsize : 0;
-    $data->showtype = (isset($config->showtype)) ? $config->showtype : 0;
-    $data->showdate = (isset($config->showdate)) ? $config->showdate : 0;
-    $data->filterfiles = $config->filterfiles;
-
-    return syllabus_add_instance($data, null);
-}
-*/
 
 /**
  * Mark the activity completed (if required) and trigger the course_module_viewed event.

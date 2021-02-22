@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,14 +29,13 @@ use context_module;
 use mod_syllabus_external;
 
 /**
-* Mobile output class for syllabus
-* 
-* @package      mod_syllabus
-* @copyright    2021 Marty Gilbert <martygilbert@gmail>
-* @license      http://www.gnu.org/copyleft/gpl.html BNU GPL v3 or later
-*/
+ * Mobile output class for syllabus
+ * @package      mod_syllabus
+ * @copyright    2021 Marty Gilbert <martygilbert@gmail>
+ * @license      http://www.gnu.org/copyleft/gpl.html BNU GPL v3 or later
+ */
 class mobile {
-    
+
     public static function mobile_syllabus_view($args) {
         global $OUTPUT, $USER, $DB;
 
@@ -57,9 +55,9 @@ class mobile {
         }
 
         $fs = get_file_storage();
-        $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
+        $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0,
+            'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
         $file = reset($files);
-        //unset($files);
 
         $fileurl = \moodle_url::make_webservice_pluginfile_url(
                                         $context->id, 'mod_syllabus', 'content', 0,
@@ -71,7 +69,7 @@ class mobile {
         $thisfile->timemodified = $file->get_timemodified();
         $thisfile->size         = $file->get_filesize();
 
-        $data = array( 
+        $data = array(
             'file'  => $thisfile,
         );
 
@@ -83,8 +81,7 @@ class mobile {
                 ],
             ],
             'javascript' => '',
-            //'otherdata' => 'test42',
-            'files' => '',//$data,
+            'files' => '',
         ];
     }
 

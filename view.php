@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,27 +27,25 @@ require_once($CFG->dirroot.'/mod/syllabus/lib.php');
 require_once($CFG->dirroot.'/mod/syllabus/locallib.php');
 require_once($CFG->libdir.'/completionlib.php');
 
-$id       = optional_param('id', 0, PARAM_INT); // Course Module ID
-$r        = optional_param('r', 0, PARAM_INT);  // Resource instance ID
+$id       = optional_param('id', 0, PARAM_INT); // Course Module ID.
+$r        = optional_param('r', 0, PARAM_INT);  // Resource instance ID.
 $redirect = optional_param('redirect', 0, PARAM_BOOL);
 $forceview = optional_param('forceview', 0, PARAM_BOOL);
 
 if ($r) {
-    if (!$syllabus = $DB->get_record('syllabus', array('id'=>$r))) {
-        //syllabus_redirect_if_migrated($r, 0);
+    if (!$syllabus = $DB->get_record('syllabus', array('id' => $r))) {
         print_error('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('syllabus', $syllabus->id, $syllabus->course, false, MUST_EXIST);
 
 } else {
     if (!$cm = get_coursemodule_from_id('syllabus', $id)) {
-        //syllabus_redirect_if_migrated(0, $id);
         print_error('invalidcoursemodule');
     }
-    $syllabus = $DB->get_record('syllabus', array('id'=>$cm->instance), '*', MUST_EXIST);
+    $syllabus = $DB->get_record('syllabus', array('id' => $cm->instance), '*', MUST_EXIST);
 }
 
-$course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
+$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
@@ -60,8 +57,8 @@ syllabus_view($syllabus, $course, $cm, $context);
 $PAGE->set_url('/mod/syllabus/view.php', array('id' => $cm->id));
 
 $fs = get_file_storage();
-$files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
-//error_log(print_r($files, true));
+$files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0,
+    'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
 if (count($files) < 1) {
     syllabus_print_filenotfound($syllabus, $cm, $course);
     die;
@@ -71,7 +68,6 @@ if (count($files) < 1) {
 }
 
 $syllabus->mainfile = $file->get_filename();
-error_log(print_r($file, true));
 $displaytype = syllabus_get_final_display_type($syllabus);
 if ($displaytype == RESOURCELIB_DISPLAY_OPEN || $displaytype == RESOURCELIB_DISPLAY_DOWNLOAD) {
     $redirect = true;
@@ -85,8 +81,8 @@ if ($redirect && !course_get_format($course)->has_view_page() &&
 }
 
 if ($redirect && !$forceview) {
-    // coming from course page or url index page
-    // this redirect trick solves caching problems when tracking views ;-)
+    // Coming from course page or url index page.
+    // This redirect trick solves caching problems when tracking views.
     $path = '/'.$context->id.'/mod_syllabus/content/'.$syllabus->revision.$file->get_filepath().$file->get_filename();
     $fullurl = moodle_url::make_file_url('/pluginfile.php', $path, $displaytype == RESOURCELIB_DISPLAY_DOWNLOAD);
     redirect($fullurl);
