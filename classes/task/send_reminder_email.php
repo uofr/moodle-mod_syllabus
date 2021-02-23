@@ -85,7 +85,7 @@ class send_reminder_email extends \core\task\scheduled_task {
                     $teachers = get_users_by_capability($coursecon, 'moodle/backup:backupcourse', 'u.id');
 
                     foreach ($teachers as $teacher) {
-                        $coursestoprocess[$teacher->id][$course->shortname]['shortname'] = $course->shortname;
+                        $coursestoprocess[$teacher->id][$course->shortname]['name'] = $course->fullname;
                         $coursestoprocess[$teacher->id][$course->shortname]['url'] = (string) new \moodle_url('/course/view.php',
                             array('id' => $course->id));
                     }
@@ -113,7 +113,7 @@ class send_reminder_email extends \core\task\scheduled_task {
         $teacher = $DB->get_record('user', array('id' => $teacherid));
         $admin = get_admin();
 
-        email_to_user($teacher, $admin, get_string('emailsubj', 'mod_syllabus') . ' - ' . $datestr, html_to_text($msg), $msg);
+        email_to_user($teacher, $admin, get_string('emailsubj', 'mod_syllabus') . ' - ' . $datestr . ' - ' . $teacher->username, html_to_text($msg), $msg);
 
     }
 
