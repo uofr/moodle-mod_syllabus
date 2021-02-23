@@ -140,14 +140,16 @@ $string['configaddsyllabuslink'] = 'URL of the training documentaion that explai
 If this is blank, the relevant language is left out of the reminder emails.';
 
 // For reminder emails.
-$string['emailsubj'] = 'Reminder - Post a Syllabus in Your Course';
+$string['emailsubj'] = 'Syllabus Missing in Course';
 $string['emailgreeting'] = 'Hello -';
-$string['emailintro'] = 'This is an automated email to notify you that one or more of your courses lack a Syllabus Resource. Here is a list of the course(s) in question:';
-$string['emailtraining'] = 'If you would like more information, please view the <a href="{a}">documentation on how to add a Syllabus Resource to your course</a>';
-$string['emailclosing'] = '<p>If you have any questions, please contact your department chair or division dean.</p>
+$string['emailintro'] = 'Each course at Mars Hill University is required to post a
+syllabus to its respective Moodle site. It appears that at least one of your
+courses lack this requirement. The courses currently without a Syllabus Resource include:';
+$string['emailtraining'] = 'If you have questions about how to add a Syllabus Resource to
+your site, please <a href="{a}">view this tutorial</a>';
+$string['emailclosing'] = '<p>If you have any questions about the syllabus requirement, please contact your department chair or division dean.</p>
 
 <p>Thanks in advance for your attention to this matter,</p>
 
 <p>Moodle Administrator<br>
 moodleadmin@mhu.edu</p>';
-
