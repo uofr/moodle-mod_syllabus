@@ -28,11 +28,14 @@
     * none
 
 }}
+<style type="text/css">
+p,a {font-family: Arial, sans-serif;}
+</style>
 <p>{{#str}}emailgreeting, mod_syllabus{{/str}}</p>
 <p>{{#str}}emailintro, mod_syllabus{{/str}}</p>
 <ul>
 {{#courses}}
-    <li><a href="{{url}}">{{shortname}}</a></li> 
+    <li><a href="{{url}}">{{name}}</a></li> 
 {{/courses}}
 </ul>
 {{#docurl}}<p>{{#str}}emailtraining, mod_syllabus, {{docurl}}{{/str}}</p>{{/docurl}}
