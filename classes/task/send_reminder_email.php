@@ -69,7 +69,6 @@ class send_reminder_email extends \core\task\scheduled_task {
 
         $coursecat = \core_course_category::get($catid);
         $courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
-        //error_log(var_dump($courses));
 
         $now = time();
         foreach ($courses as $courseid) {
@@ -113,8 +112,8 @@ class send_reminder_email extends \core\task\scheduled_task {
         $teacher = $DB->get_record('user', array('id' => $teacherid));
         $admin = get_admin();
 
-        email_to_user($teacher, $admin, get_string('emailsubj', 'mod_syllabus') . ' - ' . $datestr . ' - ' . $teacher->username, html_to_text($msg), $msg);
-
+        email_to_user($teacher, $admin,
+            get_string('emailsubj', 'mod_syllabus') . ' - ' . $datestr . ' - ' . $teacher->username, html_to_text($msg), $msg);
     }
 
     private function email_admin($msg) {

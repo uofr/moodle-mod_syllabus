@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -36,7 +35,7 @@ class restore_syllabus_activity_structure_step extends restore_activity_structur
         $paths = array();
         $paths[] = new restore_path_element('syllabus', '/activity/syllabus');
 
-        // Return the paths wrapped into standard activity structure
+        // Return the paths wrapped into standard activity structure.
         return $this->prepare_activity_structure($paths);
     }
 
@@ -50,14 +49,14 @@ class restore_syllabus_activity_structure_step extends restore_activity_structur
         // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
         // See MDL-9367.
 
-        // insert the syllabus record
+        // Insert the syllabus record.
         $newitemid = $DB->insert_record('syllabus', $data);
-        // immediately after inserting "activity" record, call this
+        // Immediately after inserting "activity" record, call this.
         $this->apply_activity_instance($newitemid);
     }
 
     protected function after_execute() {
-        // Add choice related files, no need to match by itemname (just internally handled context)
+        // Add choice related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_syllabus', 'intro', null);
         $this->add_related_files('mod_syllabus', 'content', null);
     }

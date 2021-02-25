@@ -157,9 +157,8 @@ class mod_syllabus_external extends external_api {
                 // Entry to return.
                 $syllabus->name = external_format_string($syllabus->name, $context->id);
                 $options = array('noclean' => true);
-                list($syllabus->intro, $syllabus->introformat) = 
-                    external_format_text($syllabus->intro, $syllabus->introformat, $context->id, 'mod_syllabus', 'intro', null,
-                        $options);
+                list($syllabus->intro, $syllabus->introformat) = external_format_text(
+                    $syllabus->intro, $syllabus->introformat, $context->id, 'mod_syllabus', 'intro', null, $options);
                 $syllabus->introfiles = external_util::get_area_files($context->id, 'mod_syllabus', 'intro', false, false);
                 $syllabus->contentfiles = external_util::get_area_files($context->id, 'mod_syllabus', 'content');
 

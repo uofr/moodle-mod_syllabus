@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -55,15 +54,15 @@ class backup_syllabus_activity_task extends backup_activity_task {
     static public function encode_content_links($content) {
         global $CFG, $DB;
 
-        $base = preg_quote($CFG->wwwroot,"/");
+        $base = preg_quote($CFG->wwwroot, "/");
 
         // Link to the list of syllabi.
-        $search="/(".$base."\/mod\/syllabus\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@SYLLABUSINDEX*$2@$', $content);
+        $search = "/(".$base."\/mod\/syllabus\/index.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@SYLLABUSINDEX*$2@$', $content);
 
         // Link to Syllabus view by moduleid.
         $search = "/(".$base."\/mod\/syllabus\/view.php\?id\=)([0-9]+)/";
-        // Link to syllabus view by recordid
+        // Link to syllabus view by recordid.
         $search2 = "/(".$base."\/mod\/syllabus\/view.php\?r\=)([0-9]+)/";
 
         $content = preg_replace($search, '$@SYLLABUSVIEWBYID*$2@$', $content);

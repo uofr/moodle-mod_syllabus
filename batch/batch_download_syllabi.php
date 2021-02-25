@@ -1,11 +1,29 @@
 <?php
-  
-define('CLI_SCRIPT', true);
-require('../../../config.php');
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-    The purpose of this script is to download all of the syllabi in a category
-*/
+ * The purpose of this script is to download all of the syllabi in a category
+ *
+ * @package    mod_syllabus
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+define('CLI_SCRIPT', true);
+require('../../../config.php');
 
 function make_path($newpath) {
 
@@ -42,50 +60,40 @@ $courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true))
 
 $fs = get_file_storage();
 
-foreach ($courses as $cid) { 
+foreach ($courses as $cid) {
     $course = get_course($cid);
 
     $thiscoursecat = \core_course_category::get($course->category);
     $catpath = $thiscoursecat->get_nested_name(false);
     $catpath = preg_replace("/[^A-Za-z0-9\/]/", '', $catpath);
 
-
     $syllabi = get_all_instances_in_course('syllabus', $course, null, true);
 
     $newpath = $dest . '/' . $catpath . '/' . $course->shortname;
-    
+
     $counter = 0;
     foreach ($syllabi as $syllabus) {
-        //print_r($syllabus);
         make_path($newpath);
 
         $modcon = context_module::instance($syllabus->coursemodule);
 
-        $files = $fs->get_area_files($modcon->id, 'mod_syllabus', 'content', 0, 
+        $files = $fs->get_area_files($modcon->id, 'mod_syllabus', 'content', 0,
             'sortorder DESC, id ASC', false);
 
-        // Convert desc to text 
+        // Convert desc to text.
         $intro = html_to_text($syllabus->intro);
         file_put_contents($newpath . '/' . 'description.txt', $intro);
-        
+
         foreach ($files as $file) {
             $file = reset($files);
-    
+
             $content = $file->get_content();
 
-            //$fn = sprintf("%03d", $counter) . '_';
             $fn = preg_replace("/[^A-Za-z0-9\.-]/", '', $file->get_filename());
-            //file_put_contents($newpath . '/' . $fn, $content);
             $fs->get_file_system()->copy_content_from_storedfile($file, $newpath .'/'. $fn);
-            
+
             $counter++;
         }
-    
+
     }
-
-
-
-    // If it has a syllabus activity, make the dir
-    //make_path($newpath);
-
 }
