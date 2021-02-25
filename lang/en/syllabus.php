@@ -144,9 +144,9 @@ $string['emailsubj'] = 'Syllabus Missing in Course';
 $string['emailgreeting'] = 'Hello -';
 $string['emailintro'] = 'Each course at Mars Hill University is required to post a
 syllabus to its respective Moodle site. It appears that at least one of your
-courses lack this requirement. The courses currently without a Syllabus Resource include:';
+courses lack this resource. The courses currently without a Syllabus Resource include:';
 $string['emailtraining'] = 'If you have questions about how to add a Syllabus Resource to
-your site, please <a href="{a}">view this tutorial</a>';
+your site, please view <a href="{a}">this tutorial</a>';
 $string['emailclosing'] = '<p>If you have any questions about the syllabus requirement, please contact your department chair or division dean.</p>
 
 <p>Thanks in advance for your attention to this matter,</p>
