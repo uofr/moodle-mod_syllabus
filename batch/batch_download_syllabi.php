@@ -10,7 +10,7 @@ require('../../../config.php');
 function make_path($newpath) {
 
     if (!file_exists($newpath)) {
-        if (!mkdir ($newpath, 0777, true)) {
+        if (!mkdir ($newpath, 0755, true)) {
             echo "Error making directory $newpath. Exiting\n";
             exit;
         }
@@ -38,38 +38,46 @@ if (!$category) {
 }
 
 $coursecat = \core_course_category::get($category->id);
-$courses = $coursecat->get_courses(array('recursive' => true));
+$courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
 
 $fs = get_file_storage();
 
-foreach ($courses as $course) { 
+foreach ($courses as $cid) { 
+    $course = get_course($cid);
+
     $thiscoursecat = \core_course_category::get($course->category);
     $catpath = $thiscoursecat->get_nested_name(false);
     $catpath = preg_replace("/[^A-Za-z0-9\/]/", '', $catpath);
 
-    $newpath = $dest . '/' . $catpath;
 
-    $syllabi = get_all_instances_in_course('syllabus', $course, NULL, true);
+    $syllabi = get_all_instances_in_course('syllabus', $course, null, true);
 
-    $fn = $course->shortname;
+    $newpath = $dest . '/' . $catpath . '/' . $course->shortname;
     
-    $counter = 1;
+    $counter = 0;
     foreach ($syllabi as $syllabus) {
+        //print_r($syllabus);
+        make_path($newpath);
+
         $modcon = context_module::instance($syllabus->coursemodule);
 
         $files = $fs->get_area_files($modcon->id, 'mod_syllabus', 'content', 0, 
             'sortorder DESC, id ASC', false);
+
+        // Convert desc to text 
+        $intro = html_to_text($syllabus->intro);
+        file_put_contents($newpath . '/' . 'description.txt', $intro);
         
         foreach ($files as $file) {
             $file = reset($files);
     
             $content = $file->get_content();
-            //echo $file->get_filename()."\n";  
 
-            make_path($newpath);
-            $fn = sprintf("%03d", $counter) . '_' . $fn;
-            $fn .= '_' . preg_replace("/[^A-Za-z0-9\.-]/", '', $file->get_filename());
-            file_put_contents($newpath . '/' . $fn, $content);
+            //$fn = sprintf("%03d", $counter) . '_';
+            $fn = preg_replace("/[^A-Za-z0-9\.-]/", '', $file->get_filename());
+            //file_put_contents($newpath . '/' . $fn, $content);
+            $fs->get_file_system()->copy_content_from_storedfile($file, $newpath .'/'. $fn);
+            
             $counter++;
         }
     
