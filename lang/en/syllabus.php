@@ -148,7 +148,6 @@ courses lacks this resource. The courses currently without a Syllabus Resource i
 $string['emailtraining'] = 'If you have questions about how to add a Syllabus Resource to
 your site, please view <a href="{a}">this tutorial</a>.';
 $string['emailclosing'] = '<p>If you have any questions about the syllabus requirement, please contact your department chair or division dean.</p>
-
 <p>Thanks in advance for your attention to this matter,</p>
 
 <p>Moodle Administrator<br>
