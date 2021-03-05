@@ -132,6 +132,15 @@ function syllabus_update_instance($data, $mform) {
     $completiontimeexpected = !empty($data->completionexpected) ? $data->completionexpected : null;
     \core_completion\api::update_completion_date_event($data->coursemodule, 'syllabus', $data->id, $completiontimeexpected);
 
+	// MJG - the syllabus has been updated; trigger the update event.
+	error_log("Just triggered the event - anything happen?");
+    $context = context_module::instance($data->coursemodule);
+	$event = \mod_syllabus\event\course_module_updated::create(array('context' => $context, 'objectid' => $data->coursemodule));
+	$event->trigger();
+	//error_log(print_r($data, true));
+	//error_log("MFORM");
+	//error_log(print_r($mform, true));
+
     return true;
 }
 
