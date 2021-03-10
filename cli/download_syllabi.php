@@ -71,6 +71,14 @@ foreach ($courses as $cid) {
 
     $newpath = $dest . '/' . $catpath . '/' . $course->shortname;
 
+    $coursecon = context_course::instance($cid);
+    $teachers = get_users_by_capability($coursecon, 'mod/assign:grade');
+
+    $teacherdisp = "Teachers for this course:\n";
+    foreach ($teachers as $teacher) {
+        $teacherdisp .= $teacher->firstname .' '.$teacher->lastname.','.$teacher->email."\n";
+    }
+
     $counter = 0;
     foreach ($syllabi as $syllabus) {
         make_path($newpath);
@@ -82,7 +90,8 @@ foreach ($courses as $cid) {
 
         // Convert desc to text.
         $intro = html_to_text($syllabus->intro);
-        file_put_contents($newpath . '/' . 'description.txt', $intro);
+
+        file_put_contents($newpath . '/' . 'description.txt', $teacherdisp."\n\n".$intro);
 
         foreach ($files as $file) {
             $file = reset($files);
