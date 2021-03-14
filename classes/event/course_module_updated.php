@@ -15,16 +15,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Resource module version information
+ * The mod_syllabus instance list viewed event.
  *
  * @package    mod_syllabus
  * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_syllabus\event;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2021031301;    // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 2020060900;    // Requires this Moodle version
-$plugin->component = 'mod_syllabus'; // Full name of the plugin (used for diagnostics).
-$plugin->cron      = 0;
+/**
+ * The mod_syllabus instance list viewed event class.
+ *
+ * @package    mod_syllabus
+ * @since      Moodle 3.9
+ * @copyright  2021 Marty Gilbert <martygilbert@gmail>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class course_module_updated extends \core\event\base {
+    // No need for any code here as everything is handled by the parent class.
+	/**
+     * Init method.
+     *
+     * @return void
+     */
+    protected function init() {
+        $this->data['crud'] = 'u';
+        $this->data['edulevel'] = self::LEVEL_TEACHING;
+        $this->data['objecttable'] = 'syllabus';
+    }
+
+}
