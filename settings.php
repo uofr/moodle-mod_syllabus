@@ -62,7 +62,7 @@ if ($ADMIN->fulltree) {
         get_string('emailstohidden', 'syllabus'), get_string('configemailstohidden', 'syllabus'), 1));
     // Category to process.
     $settings->add(new admin_setting_configtext('syllabus/uniquecatname',
-        get_string('uniquecategoryname', 'syllabus'), get_string('configuniquecategoryname', 'syllabus'), '', PARAM_ALPHA));
+        get_string('uniquecategoryname', 'syllabus'), get_string('configuniquecategoryname', 'syllabus'), '', PARAM_ALPHANUM));
     // Link to HowTo Add A Syllabus documentation.
     $settings->add(new admin_setting_configtext('syllabus/addsyllabuslink',
         get_string('addsyllabuslink', 'syllabus'), get_string('configaddsyllabuslink', 'syllabus'), '', PARAM_URL));
