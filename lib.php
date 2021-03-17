@@ -108,9 +108,10 @@ function syllabus_add_instance($data, $mform) {
     $completiontimeexpected = !empty($data->completionexpected) ? $data->completionexpected : null;
     \core_completion\api::update_completion_date_event($cmid, 'syllabus', $data->id, $completiontimeexpected);
 
+    error_log("Adding an instance");
     $context = context_module::instance($data->coursemodule);
-	$event = \mod_syllabus\event\course_module_added::create(array('context' => $context, 'objectid' => $data->coursemodule));
-	$event->trigger();
+    $event = \mod_syllabus\event\course_module_added::create(array('context' => $context, 'objectid' => $data->coursemodule));
+    $event->trigger();
 
     return $data->id;
 }
@@ -137,8 +138,8 @@ function syllabus_update_instance($data, $mform) {
     \core_completion\api::update_completion_date_event($data->coursemodule, 'syllabus', $data->id, $completiontimeexpected);
 
     $context = context_module::instance($data->coursemodule);
-	$event = \mod_syllabus\event\course_module_updated::create(array('context' => $context, 'objectid' => $data->coursemodule));
-	$event->trigger();
+    $event = \mod_syllabus\event\course_module_updated::create(array('context' => $context, 'objectid' => $data->coursemodule));
+    $event->trigger();
 
     return true;
 }
@@ -178,7 +179,7 @@ function syllabus_set_display_options($data) {
  */
 function syllabus_delete_instance($id) {
     global $DB;
-
+    error_log("Inside the delete_instance method");
     if (!$syllabus = $DB->get_record('syllabus', array('id' => $id))) {
         return false;
     }
@@ -189,6 +190,10 @@ function syllabus_delete_instance($id) {
     // Note: all context files are deleted automatically.
 
     $DB->delete_records('syllabus', array('id' => $syllabus->id));
+
+    $context = context_module::instance($cm->id);
+    $event = \mod_syllabus\event\course_module_deleted::create(array('context' => $context, 'objectid' => $cm->id));
+    $event->trigger();
 
     return true;
 }
