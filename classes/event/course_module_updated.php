@@ -36,7 +36,7 @@ defined('MOODLE_INTERNAL') || die();
  */
 class course_module_updated extends \core\event\base {
     // No need for any code here as everything is handled by the parent class.
-	/**
+    /**
      * Init method.
      *
      * @return void

@@ -42,7 +42,7 @@ class course_module_deleted extends \core\event\base {
      * @return void
      */
     protected function init() {
-        $this->data['crud'] = 'u';
+        $this->data['crud'] = 'd';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'syllabus';
     }
