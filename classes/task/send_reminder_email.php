@@ -84,9 +84,13 @@ class send_reminder_email extends \core\task\scheduled_task {
                     $teachers = get_users_by_capability($coursecon, 'moodle/backup:backupcourse', 'u.id');
 
                     foreach ($teachers as $teacher) {
-                        $coursestoprocess[$teacher->id][$course->shortname]['name'] = $course->fullname;
-                        $coursestoprocess[$teacher->id][$course->shortname]['url'] = (string) new \moodle_url('/course/view.php',
-                            array('id' => $course->id));
+                        // Don't add a teacher if they can't view the course currently?
+                        // Like it's a hidden course in a category where they can't view hidden courses.
+                        if (has_capability('moodle/course:viewhiddencourses', $coursecon, $teacher->id)) {
+                            $coursestoprocess[$teacher->id][$course->shortname]['name'] = $course->fullname;
+                            $coursestoprocess[$teacher->id][$course->shortname]['url'] = (string) new \moodle_url('/course/view.php',
+                                array('id' => $course->id));
+                        }
                     }
 
                 }
