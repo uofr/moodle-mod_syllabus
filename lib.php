@@ -189,7 +189,8 @@ function syllabus_delete_instance($id) {
     // Note: all context files are deleted automatically.
 
     $context = context_module::instance($cm->id);
-    $event = \mod_syllabus\event\course_module_deleted::create(array('context' => $context, 'objectid' => $cm->id));
+    $event = \mod_syllabus\event\course_module_deleted::create(array('context' => $context, 'objectid' => $cm->id,
+        'other' => array('syllabusid' => $id)));
     $event->trigger();
 
     $DB->delete_records('syllabus', array('id' => $syllabus->id));
