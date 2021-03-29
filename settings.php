@@ -66,6 +66,9 @@ if ($ADMIN->fulltree) {
     // Link to HowTo Add A Syllabus documentation.
     $settings->add(new admin_setting_configtext('syllabus/addsyllabuslink',
         get_string('addsyllabuslink', 'syllabus'), get_string('configaddsyllabuslink', 'syllabus'), '', PARAM_URL));
+    // Exclude courses whose shortnames match this RegEx
+    $settings->add(new admin_setting_configtext('syllabus/excluderegex',
+        get_string('excluderegex', 'syllabus'), get_string('configexcluderegex', 'syllabus'), '', PARAM_RAW));
 
 
     // --- modedit defaults -----------------------------------------------------------------------------------

@@ -40,6 +40,8 @@ class send_reminder_email extends \core\task\scheduled_task {
             return;
         }
 
+		$regex = get_config('syllabus', 'excluderegex');
+
         // First index is instructor; second is course->shortname.
         $coursestoprocess = array();
 
@@ -73,6 +75,12 @@ class send_reminder_email extends \core\task\scheduled_task {
         $now = time();
         foreach ($courses as $courseid) {
             $course = get_course($courseid);
+			if ($regex) {
+				if(preg_match($regex, $course->shortname)) {
+					mtrace("Skipping course $course->shortname because it matches exclude regex.");
+					continue;
+				}
+			}
             $syllabi = get_all_instances_in_course('syllabus', $course, null, true);
 
             if (count($syllabi) == 0 && $course->startdate < $now && $course->enddate > $now) {

@@ -135,9 +135,16 @@ $string['confreminderemail'] = 'Settings that affect the remdiner email schedule
 $string['enablereminders'] = 'Enable reminder emails';
 $string['configenablereminders'] = 'If enabled, will send email reminders to teachers that
 don\'t have a Syllabus activity in their courses.';
-$string['addsyllabuslink'] = 'Add a syllabus documentation';
+$string['addsyllabuslink'] = 'Documentation link';
 $string['configaddsyllabuslink'] = 'URL of the training documentaion that explains how a teacher would add a syllabus.
 If this is blank, the relevant language is left out of the reminder emails.';
+$string['excluderegex'] = 'Exclude courses RegEx';
+$string['configexcluderegex'] = 'PHP RegEx performed on course shortnames; matches are excluded from reminder emails. <br>Examples: 
+    <ul>
+        <li>/foo/  - exclude any course with foo in the shortname</li>
+        <li>/bar/i - exclude any course with bar in the shortname, case insensitive</li>
+        <li>/foo|bar/i - exclude any course with foo OR bar in the shortname, case insensitive</li>
+    </ul>';
 
 // For reminder emails.
 $string['emailsubj'] = 'Syllabus Missing in Course';
