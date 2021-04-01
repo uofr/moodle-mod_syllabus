@@ -109,7 +109,9 @@ function syllabus_add_instance($data, $mform) {
     \core_completion\api::update_completion_date_event($cmid, 'syllabus', $data->id, $completiontimeexpected);
 
     $context = context_module::instance($data->coursemodule);
-    $event = \mod_syllabus\event\course_module_added::create(array('context' => $context, 'objectid' => $data->coursemodule));
+    $event = \mod_syllabus\event\course_module_added::create(array('context' => $context, 'objectid' => $data->coursemodule,
+        'other' => array('syllabusid' => $data->id, 'cmid' => $cmid)));
+
     $event->trigger();
 
     return $data->id;
