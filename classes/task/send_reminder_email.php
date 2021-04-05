@@ -40,7 +40,7 @@ class send_reminder_email extends \core\task\scheduled_task {
             return;
         }
 
-		$regex = get_config('syllabus', 'excluderegex');
+        $regex = get_config('syllabus', 'excluderegex');
 
         // First index is instructor; second is course->shortname.
         $coursestoprocess = array();
@@ -75,12 +75,12 @@ class send_reminder_email extends \core\task\scheduled_task {
         $now = time();
         foreach ($courses as $courseid) {
             $course = get_course($courseid);
-			if ($regex) {
-				if(preg_match($regex, $course->shortname)) {
-					mtrace("Skipping course $course->shortname because it matches exclude regex.");
-					continue;
-				}
-			}
+            if ($regex) {
+                if (preg_match($regex, $course->shortname)) {
+                    mtrace("Skipping course $course->shortname because it matches exclude regex.");
+                    continue;
+                }
+            }
             $syllabi = get_all_instances_in_course('syllabus', $course, null, true);
 
             if (count($syllabi) == 0 && $course->startdate < $now && $course->enddate > $now) {
@@ -96,8 +96,8 @@ class send_reminder_email extends \core\task\scheduled_task {
                         // Like it's a hidden course in a category where they can't view hidden courses.
                         if (has_capability('moodle/course:viewhiddencourses', $coursecon, $teacher->id)) {
                             $coursestoprocess[$teacher->id][$course->shortname]['name'] = $course->fullname;
-                            $coursestoprocess[$teacher->id][$course->shortname]['url'] = (string) new \moodle_url('/course/view.php',
-                                array('id' => $course->id));
+                            $coursestoprocess[$teacher->id][$course->shortname]['url'] = (string)
+                                new \moodle_url('/course/view.php', array('id' => $course->id));
                         }
                     }
 
