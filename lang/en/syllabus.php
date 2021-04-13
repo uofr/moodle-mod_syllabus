@@ -149,9 +149,7 @@ $string['configexcluderegex'] = 'PHP RegEx performed on course shortnames; match
 // For reminder emails.
 $string['emailsubj'] = 'Syllabus Missing in Course';
 $string['emailgreeting'] = 'Hello -';
-$string['emailintro'] = 'Instructors at Mars Hill University are required to post a
-syllabus to each course\'s Moodle site. It appears that at least one of your
-courses lacks this resource. The courses currently without a Syllabus Resource include:';
+$string['emailintro'] = 'Instructors at Mars Hill University are required to post a syllabus using the "Syllabus Resource" to each course\'s Moodle site; this replaces older and sometimes department/division-specific syllabus collection methods for records/SACSCOC purposes. It appears that at least one of your courses lacks this resource. The courses currently without a Syllabus Resource include:';
 $string['emailtraining'] = 'If you have questions about how to add a Syllabus Resource to
 your site, please view <a href="{a}">this tutorial</a>.';
 $string['emailclosing'] = '<p>If you have any questions about the syllabus requirement, please contact your department chair or division dean.</p>
