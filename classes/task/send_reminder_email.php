@@ -122,6 +122,9 @@ class send_reminder_email extends \core\task\scheduled_task {
     private function email_teacher($teacherid, $msg, $datestr) {
         global $DB;
         $teacher = $DB->get_record('user', array('id' => $teacherid));
+
+        mtrace("Sending reminder email to $teacher->firstname $teacher->lastname");
+
         $admin = get_admin();
 
         email_to_user($teacher, $admin,
