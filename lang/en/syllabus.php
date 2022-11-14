@@ -55,7 +55,7 @@ $string['dnduploadsyllabus'] = 'Create syllabus';
 $string['encryptedcode'] = 'Encrypted code';
 $string['filenotfound'] = 'File not found, sorry.';
 $string['filterfiles'] = 'Use filters on file content';
-$string['filterfilesexplain'] = 'Select type of file content filtering, please note this may cause problems for some Flash and Java applets. Please make sure that all text files are in UTF-8 encoding.';
+$string['filterfilesexplain'] = 'Select type of file content filtering. Please make sure that all text files are in UTF-8 encoding.';
 $string['filtername'] = 'Resource names auto-linking';
 $string['forcedownload'] = 'Force download';
 $string['framesize'] = 'Frame height';
@@ -74,9 +74,7 @@ $string['legacyfilesactive'] = 'Active';
 $string['legacyfilesdone'] = 'Finished';
 $string['modifieddate'] = 'Modified {$a}';
 $string['modulename'] = 'Syllabus';
-$string['modulename_help'] = 'The syllabus module enables a teacher to provide a file as a course syllabus. Where possible, the file will be displayed within the course interface; otherwise students will be prompted to download it. The file may include supporting files, for example an HTML page may have embedded images.
-
-Note that students need to have the appropriate software on their computers in order to open the file.';
+$string['modulename_help'] = 'The syllabus module enables an instructor to provide a file as a course syllabus. Where possible, the file will be displayed within the course interface; otherwise students will be prompted to download it. The file may also include supporting files, for example an HTML page may have embedded images.';
 $string['modulename_link'] = 'mod/syllabus/view';
 $string['modulenameplural'] = 'Syllabi';
 $string['notmigrated'] = 'This legacy syllabus type ({$a}) was not yet migrated, sorry.';
@@ -149,13 +147,12 @@ $string['configexcluderegex'] = 'PHP RegEx performed on course shortnames; match
 // For reminder emails.
 $string['emailsubj'] = 'Syllabus Missing in Course';
 $string['emailgreeting'] = 'Hello -';
-$string['emailintro'] = 'Instructors at Mars Hill University are required to post a
-syllabus to each course\'s Moodle site. It appears that at least one of your
+$string['emailintro'] = 'Instructors are strongly encouraged to post a
+syllabus to each course\'s site. It appears that at least one of your
 courses lacks this resource. The courses currently without a Syllabus Resource include:';
 $string['emailtraining'] = 'If you have questions about how to add a Syllabus Resource to
 your site, please view <a href="{a}">this tutorial</a>.';
-$string['emailclosing'] = '<p>If you have any questions about the syllabus requirement, please contact your department chair or division dean.</p>
+$string['emailclosing'] = '<p>If you have any questions about the syllabus resource, please contact support.</p>
 <p>Thanks in advance for your attention to this matter,</p>
 
-<p>Moodle Administrator<br>
-moodleadmin@mhu.edu</p>';
+<p>Moodle Administrator</p>';
