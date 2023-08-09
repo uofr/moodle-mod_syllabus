@@ -125,9 +125,9 @@ $string['uploadeddate'] = 'Uploaded {$a}';
 // Added by MJG.
 $string['selectfile'] = 'Select syllabus file';
 $string['reminderemail'] = 'Send reminder to upload syllabus';
-$string['uniquecategoryname'] = 'Category name';
-$string['configuniquecategoryname'] = 'The category name to check recursively. If blank,
-will check the entire site.';
+$string['catstocheck'] = 'Categories to check';
+$string['configcatstocheck'] = 'The categories to check, recursively, for having a
+syllabus present in the courses.';
 $string['emailstohidden']   = 'Send reminders to hidden courses';
 $string['configemailstohidden'] = 'If a course is hidden, still send a reminder email about missing a syllabus';
 $string['taskreminderemailsettings'] = 'Reminder email task settings';

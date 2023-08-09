@@ -60,9 +60,12 @@ if ($ADMIN->fulltree) {
     // Emails to hidden?
     $settings->add(new admin_setting_configcheckbox('syllabus/emailstohidden',
         get_string('emailstohidden', 'syllabus'), get_string('configemailstohidden', 'syllabus'), 1));
-    // Category to process.
-    $settings->add(new admin_setting_configtext('syllabus/uniquecatname',
-        get_string('uniquecategoryname', 'syllabus'), get_string('configuniquecategoryname', 'syllabus'), '', PARAM_ALPHANUM));
+
+    // Categories to process.
+    $categories = core_course_category::make_categories_list();
+    $settings->add(new admin_setting_configmultiselect('syllabus/catstocheck',
+        get_string('catstocheck', 'syllabus'), get_string('configcatstocheck', 'syllabus'), array(), $categories));
+
     // Link to HowTo Add A Syllabus documentation.
     $settings->add(new admin_setting_configtext('syllabus/addsyllabuslink',
         get_string('addsyllabuslink', 'syllabus'), get_string('configaddsyllabuslink', 'syllabus'), '', PARAM_URL));
