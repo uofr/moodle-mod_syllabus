@@ -31,43 +31,32 @@ class send_reminder_email extends \core\task\scheduled_task {
         return get_string('reminderemail', 'mod_syllabus');
     }
 
-
     public function execute() {
-        global $DB, $OUTPUT;
-
         $val = get_config('syllabus', 'remindersenabled');
         if (!$val) {
             return;
         }
 
-        $regex = get_config('syllabus', 'excluderegex');
+        $cats = get_config('syllabus', 'catstocheck');
+
+        if (!empty($cats)) {
+            $cats = explode(',', $cats);
+            foreach ($cats as $catid) {
+                $this->process_category($catid);
+            }
+        } else {
+            mtrace("No categories selected to process. Exiting.");
+        }
+    }
+
+    private function process_category($catid) {
+        global $OUTPUT;
+        mtrace("Processing courses in category id $catid to see if Syllabus is present.");
 
         // First index is instructor; second is course->shortname.
         $coursestoprocess = array();
-
-        $cat        = get_config('syllabus', 'uniquecatname');
+        $regex = get_config('syllabus', 'excluderegex');
         $tohidden   = get_config('syllabus', 'emailstohidden');
-
-        if (!empty($cat)) {
-            $cats = $DB->get_records('course_categories', array('name' => $cat));
-
-            if (count($cats) == 0) {
-                mtrace("No categories named $cat. Emailing admin and exiting.");
-                $this->email_admin("nocatsnamed");
-                return;
-            } else if (count($cats) > 1) {
-                mtrace("More than one category named $cat. Emailing admin and exiting.");
-                $this->email_admin("morethanonecat");
-                return;
-            }
-
-            $thiscat = reset($cats);
-            $catid = $thiscat->id;
-        } else {
-            $catid = 0;
-        }
-
-        mtrace("Preparing to process category id: $catid");
 
         $coursecat = \core_course_category::get($catid);
         $courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
@@ -117,8 +106,15 @@ class send_reminder_email extends \core\task\scheduled_task {
             $msg = $OUTPUT->render_from_template('mod_syllabus/email_reminder', $data);
             $this->email_teacher($teacherid, $msg, $datestr);
         }
+
     }
 
+    /**
+     * Email teacher and let them know they're missing a Syllabus activity.
+     * @param int $teacherid The mdl_user id of the teacher of the course.
+     * @param string $msg The message to send, in HTML.
+     * @param string $datestr The date in m/dd/yy format.
+     */
     private function email_teacher($teacherid, $msg, $datestr) {
         global $DB;
         $teacher = $DB->get_record('user', array('id' => $teacherid));
@@ -129,11 +125,6 @@ class send_reminder_email extends \core\task\scheduled_task {
 
         email_to_user($teacher, $admin,
             get_string('emailsubj', 'mod_syllabus') . ' - ' . $datestr . ' - ' . $teacher->username, html_to_text($msg), $msg);
-    }
-
-    private function email_admin($msg) {
-        $admin = get_admin();
-        email_to_user($admin, $admin, 'Invalid category in mod_syllabus admin settings', html_to_text($msg), $msg);
     }
 
 }
