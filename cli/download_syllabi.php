@@ -55,7 +55,7 @@ if (empty($options['catid'])) {
 $dest = $options['path'];
 $catid = $options['catid'];
 
-global $CFG, $DB, $USER;
+global $CFG, $DB;
 
 $category = $DB->get_record('course_categories', array('id' => $catid));
 
@@ -64,7 +64,7 @@ if (!$category) {
 }
 
 make_path($dest);
-$coursecat = \core_course_category::get($category->id);
+$coursecat = \core_course_category::get($category->id, MUST_EXIST, true);
 $courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
 
 $fs = get_file_storage();
