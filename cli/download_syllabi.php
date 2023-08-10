@@ -64,6 +64,7 @@ if (!$category) {
 }
 
 make_path($dest);
+
 $coursecat = \core_course_category::get($category->id, MUST_EXIST, true);
 $courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
 
