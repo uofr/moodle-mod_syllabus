@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The purpose of this script is to download all of the syllabi in a category
+ * The purpose of this script is to download all of the syllabi in a category, recursively.
  *
  * @package    mod_syllabus
  * @copyright  2021 Marty Gilbert <martygilbert@gmail>
@@ -23,36 +23,55 @@
  */
 
 define('CLI_SCRIPT', true);
-require('../../../config.php');
+require(__DIR__ . '/../../../config.php');
+require_once($CFG->libdir . '/clilib.php');
 
-function make_path($newpath) {
+$usage = "Will download, recursively, all of the files posted to the Syllabus activity given a category id.
 
-    if (!file_exists($newpath)) {
-        if (!mkdir ($newpath, 0755, true)) {
-            echo "Error making directory $newpath. Exiting\n";
-            exit;
-        }
-    }
+Usage:
+    # php download_syllabi.php --path=/tmp/syllabi --catid=1234
+    # php download_syllabi.php [--help|-h]
 
+Options:
+    -h --help                   Print this help.
+    --path=<value>  Path where the syllabi should be downloaded.
+    --catid=<value> The category id of the category to process
+";
+
+list ($options, $unrecognized) = cli_get_params([
+    'help' => false,
+    'path' => null,
+    'catid' => null,
+], [
+    'h' => 'help',
+]);
+
+if ($unrecognized) {
+    $unrecognized = implode(PHP_EOL . ' ', $unrecognized);
+    cli_error(get_string('cliunknowoption', 'core_admin', $unrecognized));
 }
 
-if ($argc != 3) {
-    echo "Requires destination path and category id as command line arguments\n";
-    exit;
+if ($options['help']) {
+    cli_writeln($usage);
+    exit(2);
 }
 
-$dest = $argv[1];
+if (empty($options['catid'])) {
+    cli_error('Missing required argument catid.', 3);
+} else if (empty($options['path'])) {
+    cli_error('Missing required argument path.', 3);
+}
+
+$dest = $options['path'];
+$catid = $options['catid'];
 make_path($dest);
-
-$catid = $argv[2];
 
 global $CFG, $DB, $USER;
 
 $category = $DB->get_record('course_categories', array('id' => $catid));
 
 if (!$category) {
-    echo "Error. Category id $catid does not exist. Exiting.\n";
-    exit;
+    cli_error( "Error. Category id $catid does not exist. Exiting.", 4)
 }
 
 $coursecat = \core_course_category::get($category->id);
@@ -84,7 +103,6 @@ foreach ($courses as $cid) {
         make_path($newpath);
 
         $modcon = context_module::instance($syllabus->coursemodule);
-
         $files = $fs->get_area_files($modcon->id, 'mod_syllabus', 'content', 0,
             'sortorder DESC, id ASC', false);
 
@@ -100,9 +118,19 @@ foreach ($courses as $cid) {
 
             $fn = preg_replace("/[^A-Za-z0-9\.-]/", '', $file->get_filename());
             $fs->get_file_system()->copy_content_from_storedfile($file, $newpath .'/'. $fn);
-
             $counter++;
         }
+    }
+}
 
+/**
+ * This will make a directory on the given path, if it doesn't exist
+ * @param string $newpath The path/dir to create.
+ */
+function make_path($newpath) {
+    if (!file_exists($newpath)) {
+        if (!mkdir ($newpath, 0755, true)) {
+            cli_error( "Error making directory $newpath. Exiting.", 5);
+        }
     }
 }
