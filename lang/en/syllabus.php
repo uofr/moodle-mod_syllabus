@@ -156,3 +156,19 @@ $string['emailclosing'] = '<p>If you have any questions about the syllabus requi
 
 <p>Moodle Administrator<br>
 moodleadmin@mhu.edu</p>';
+
+// For CLI scripts.
+$string['clicatidnotfound'] = 'Error. Category id {$a} does not exist. Exiting.';
+$string['climissingrequiredarg'] = 'Missing required argument \'{$a}\'.';
+$string['clidispteachers'] = 'Teachers for this course:';
+$string['cliusage'] = "Will download, recursively, all of the files posted to the Syllabus activity given a category id.
+
+Usage:
+    # php download_syllabi.php --path=/tmp/syllabi --catid=1234
+    # php download_syllabi.php [--help|-h]
+
+Options:
+    -h --help                   Print this help.
+    --path=<value>  Path where the syllabi should be downloaded.
+    --catid=<value> The category id of the category to process
+";
