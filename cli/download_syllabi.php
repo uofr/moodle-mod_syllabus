@@ -26,17 +26,7 @@ define('CLI_SCRIPT', true);
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/clilib.php');
 
-$usage = "Will download, recursively, all of the files posted to the Syllabus activity given a category id.
-
-Usage:
-    # php download_syllabi.php --path=/tmp/syllabi --catid=1234
-    # php download_syllabi.php [--help|-h]
-
-Options:
-    -h --help                   Print this help.
-    --path=<value>  Path where the syllabi should be downloaded.
-    --catid=<value> The category id of the category to process
-";
+$usage = get_string('cliusage', 'syllabus');
 
 list ($options, $unrecognized) = cli_get_params([
     'help' => false,
@@ -57,23 +47,23 @@ if ($options['help']) {
 }
 
 if (empty($options['catid'])) {
-    cli_error('Missing required argument catid.', 3);
+    cli_error(get_string('climissingrequiredarg', 'syllabus', 'catid'), 3);
 } else if (empty($options['path'])) {
-    cli_error('Missing required argument path.', 3);
+    cli_error(get_string('climissingrequiredarg', 'syllabus', 'path'), 3);
 }
 
 $dest = $options['path'];
 $catid = $options['catid'];
-make_path($dest);
 
 global $CFG, $DB, $USER;
 
 $category = $DB->get_record('course_categories', array('id' => $catid));
 
 if (!$category) {
-    cli_error( "Error. Category id $catid does not exist. Exiting.", 4)
+    cli_error(get_string('clicatidnotfound', 'syllabus', $catid), 4);
 }
 
+make_path($dest);
 $coursecat = \core_course_category::get($category->id);
 $courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
 
@@ -93,7 +83,7 @@ foreach ($courses as $cid) {
     $coursecon = context_course::instance($cid);
     $teachers = get_users_by_capability($coursecon, 'mod/assign:grade');
 
-    $teacherdisp = "Teachers for this course:\n";
+    $teacherdisp = get_string('clidispteacher', 'syllabus')."\n";
     foreach ($teachers as $teacher) {
         $teacherdisp .= $teacher->firstname .' '.$teacher->lastname.','.$teacher->email."\n";
     }
