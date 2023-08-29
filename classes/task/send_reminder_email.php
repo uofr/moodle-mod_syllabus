@@ -34,35 +34,65 @@ class send_reminder_email extends \core\task\scheduled_task {
     public function execute() {
         $val = get_config('syllabus', 'remindersenabled');
         if (!$val) {
+            mtrace("Not sending reminder emails - remindersenabled is not set");
             return;
         }
 
         $cats = get_config('syllabus', 'catstocheck');
+        $courses = array();
 
         if (!empty($cats)) {
             $cats = explode(',', $cats);
             foreach ($cats as $catid) {
-                $this->process_category($catid);
+                $newcourses = $this->get_valid_courses($catid);
+                if ($newcourses) {
+                    $courses = array_merge($newcourses, $courses);
+                }
             }
+            $this->process_courses($courses);
         } else {
             mtrace("No categories selected to process. Exiting.");
         }
     }
 
-    private function process_category($catid) {
-        global $OUTPUT;
-        mtrace("Processing courses in category id $catid to see if Syllabus is present.");
+    private function update_config($toremove) {
+        $categories = get_config('syllabus', 'catstocheck');
+        $allcats = explode(',', $categories);
 
-        // First index is instructor; second is course->shortname.
-        $coursestoprocess = array();
-        $regex = get_config('syllabus', 'excluderegex');
-        $tohidden   = get_config('syllabus', 'emailstohidden');
+        $idx = array_search($toremove, $allcats);
+        if ($idx) {
+            unset($allcats[$idx]);
+        }
+
+        set_config('catstocheck', implode(',', $allcats), 'syllabus');
+    }
+
+    private function get_valid_courses($catid) {
+        global $DB;
+        mtrace("Finding courses in category id $catid to be processed.");
+
+        if (!$catid || !$DB->record_exists('course_categories', ['id' => $catid])) {
+            mtrace("Category ID of $catid does not exist...skipping and removing from config.");
+            $this->update_config($catid);
+            return;
+        }
 
         $coursecat = \core_course_category::get($catid);
-        $courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
+        $coursestoprocess = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
+
+        return $coursestoprocess;
+    }
+
+    private function process_courses($courses) {
+        global $OUTPUT;
+
+        // First index is instructor; second is course->shortname.
+        $regex      = get_config('syllabus', 'excluderegex');
+        $tohidden   = get_config('syllabus', 'emailstohidden');
 
         $now = time();
         foreach ($courses as $courseid) {
+            mtrace ("Processing $courseid");
             $course = get_course($courseid);
             if ($regex) {
                 if (preg_match($regex, $course->shortname)) {
@@ -81,7 +111,8 @@ class send_reminder_email extends \core\task\scheduled_task {
 
             $syllabi = get_all_instances_in_course('syllabus', $course, null, true);
 
-            if (count($syllabi) == 0 && $course->startdate < $now && $course->enddate > $now) {
+            if (count($syllabi) == 0 && $course->startdate < $now
+                && ($course->enddate == 0 || $course->enddate > $now)) {
 
                 if ($course->visible || (!$course->visible && $tohidden)) {
 
@@ -97,7 +128,6 @@ class send_reminder_email extends \core\task\scheduled_task {
                                 new \moodle_url('/course/view.php', array('id' => $course->id));
                         }
                     }
-
                 }
             }
         }
