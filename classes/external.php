@@ -24,6 +24,8 @@
  * @since      Moodle 3.9
  */
 
+use core_course\external\helper_for_get_mods_by_courses;
+
 defined('MOODLE_INTERNAL') || die;
 
 require_once("$CFG->libdir/externallib.php");
@@ -154,12 +156,8 @@ class mod_syllabus_external extends external_api {
             $syllabi = get_all_instances_in_courses("syllabus", $courses);
             foreach ($syllabi as $syllabus) {
                 $context = context_module::instance($syllabus->coursemodule);
-                // Entry to return.
-                $syllabus->name = external_format_string($syllabus->name, $context->id);
-                $options = array('noclean' => true);
-                list($syllabus->intro, $syllabus->introformat) = external_format_text(
-                    $syllabus->intro, $syllabus->introformat, $context->id, 'mod_syllabus', 'intro', null, $options);
-                $syllabus->introfiles = external_util::get_area_files($context->id, 'mod_syllabus', 'intro', false, false);
+                
+                helper_for_get_mods_by_courses::format_name_and_intro($syllabus, 'mod_syllabus');
                 $syllabus->contentfiles = external_util::get_area_files($context->id, 'mod_syllabus', 'content');
 
                 $returnedsyllabi[] = $syllabus;
@@ -183,15 +181,9 @@ class mod_syllabus_external extends external_api {
         return new external_single_structure(
             array(
                 'syllabus' => new external_multiple_structure(
-                    new external_single_structure(
-                        array(
-                            'id' => new external_value(PARAM_INT, 'Syllabus id'),
-                            'coursemodule' => new external_value(PARAM_INT, 'Course module id'),
-                            'course' => new external_value(PARAM_INT, 'Course id'),
-                            'name' => new external_value(PARAM_RAW, 'Syllabus name'),
-                            'intro' => new external_value(PARAM_RAW, 'Summary'),
-                            'introformat' => new external_format_value('intro', 'Summary format'),
-                            'introfiles' => new external_files('Files in the introduction text'),
+                    new external_single_structure(array_merge(
+                        helper_for_get_mods_by_courses::standard_coursemodule_elements_returns(),
+                        [
                             'contentfiles' => new external_files('Files in the content'),
                             'tobemigrated' => new external_value(PARAM_INT, 'Whether this syllabus was migrated'),
                             'legacyfiles' => new external_value(PARAM_INT, 'Legacy files flag'),
@@ -201,12 +193,8 @@ class mod_syllabus_external extends external_api {
                             'filterfiles' => new external_value(PARAM_INT, 'If filters should be applied to the syllabus content'),
                             'revision' => new external_value(PARAM_INT, 'Incremented when after each file changes, to avoid cache'),
                             'timemodified' => new external_value(PARAM_INT, 'Last time the syllabus was modified'),
-                            'section' => new external_value(PARAM_INT, 'Course section id'),
-                            'visible' => new external_value(PARAM_INT, 'Module visibility'),
-                            'groupmode' => new external_value(PARAM_INT, 'Group mode'),
-                            'groupingid' => new external_value(PARAM_INT, 'Grouping id'),
-                        )
-                    )
+                        ]
+                    ))
                 ),
                 'warnings' => new external_warnings(),
             )

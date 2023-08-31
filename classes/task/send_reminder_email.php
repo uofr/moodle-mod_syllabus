@@ -23,8 +23,6 @@
  */
 namespace mod_syllabus\task;
 
-defined('MOODLE_INTERNAL') || die();
-
 class send_reminder_email extends \core\task\scheduled_task {
 
     public function get_name() {
@@ -55,7 +53,13 @@ class send_reminder_email extends \core\task\scheduled_task {
         }
     }
 
-    private function update_config($toremove) {
+    /**
+     * All of the categories to check are listed in the config_plugins table
+     * `catstocheck`. If a category no longer exists, this function will
+     * remove the category id from `catstocheck` so it isn't checked again.
+     * @param int course_category id to remove from `catstocheck`
+     */
+    public function update_config($toremove) {
         $categories = get_config('syllabus', 'catstocheck');
         $allcats = explode(',', $categories);
 
@@ -67,7 +71,7 @@ class send_reminder_email extends \core\task\scheduled_task {
         set_config('catstocheck', implode(',', $allcats), 'syllabus');
     }
 
-    private function get_valid_courses($catid) {
+    public function get_valid_courses($catid) {
         global $DB;
         mtrace("Finding courses in category id $catid to be processed.");
 
@@ -77,13 +81,13 @@ class send_reminder_email extends \core\task\scheduled_task {
             return;
         }
 
-        $coursecat = \core_course_category::get($catid);
-        $coursestoprocess = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
+        $coursestoprocess = $DB->get_records('course', ['category' => $catid], '', 'id');
+        $coursestoprocess = array_keys($coursestoprocess);
 
         return $coursestoprocess;
     }
 
-    private function process_courses($courses) {
+    public function process_courses($courses) {
         global $OUTPUT;
 
         // First index is instructor; second is course->shortname.
@@ -91,8 +95,8 @@ class send_reminder_email extends \core\task\scheduled_task {
         $tohidden   = get_config('syllabus', 'emailstohidden');
 
         $now = time();
+        $coursestoprocess = array();
         foreach ($courses as $courseid) {
-            mtrace ("Processing $courseid");
             $course = get_course($courseid);
             if ($regex) {
                 if (preg_match($regex, $course->shortname)) {
@@ -115,9 +119,8 @@ class send_reminder_email extends \core\task\scheduled_task {
                 && ($course->enddate == 0 || $course->enddate > $now)) {
 
                 if ($course->visible || (!$course->visible && $tohidden)) {
-
                     // Get instructor(s) to notify.
-                    $teachers = get_users_by_capability($coursecon, 'moodle/backup:backupcourse', 'u.id');
+                    $teachers = get_users_by_capability($coursecon, 'mod/syllabus:addinstance', 'u.id');
 
                     foreach ($teachers as $teacher) {
                         // Don't add a teacher if they can't view the course currently?
@@ -153,7 +156,7 @@ class send_reminder_email extends \core\task\scheduled_task {
      * @param string $msg The message to send, in HTML.
      * @param string $datestr The date in m/dd/yy format.
      */
-    private function email_teacher($teacherid, $msg, $datestr) {
+    public function email_teacher($teacherid, $msg, $datestr) {
         global $DB;
         $teacher = $DB->get_record('user', array('id' => $teacherid));
 
