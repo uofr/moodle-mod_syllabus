@@ -74,6 +74,63 @@ class task_test extends \advanced_testcase {
     }
 
     /**
+     * This test will make sure that the reminder task does nothing if remindersenabled is
+     * false.
+     */
+    public function test_remindersendabled() {
+        global $DB;
+        $this->resetAfterTest(true);
+
+        // Create a course, without a syllabus with valid start/end times.
+        $record = [
+            'startdate' => time() - 86400,
+            'enddate' => time() + 86400,
+        ];
+
+        $course = $this->getDataGenerator()->create_course($record);
+
+        // Make sure the cron job will process these categories.
+        set_config('catstocheck', $course->category, 'syllabus');
+
+        // Make sure remindersenabled is off.
+        set_config('remindersenabled', '0', 'syllabus');
+
+        // Create a user enrolled in the course as a teacher.
+        $teacherroleid = $DB->get_field('role', 'id', ['shortname' => 'editingteacher']);
+        $teacher = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->enrol_user($teacher->id, $course->id, $teacherroleid);
+
+        // Create a user enrolled in both courses as a student - needed or no email sent.
+        $studentroleid = $DB->get_field('role', 'id', ['shortname' => 'student']);
+        $student = $this->getDataGenerator()->create_user();
+        $this->getDataGenerator()->enrol_user($student->id, $course->id, $studentroleid);
+
+        // Execute the scheduled task to send a reminder email. Should stop due to remindersenabled = false.
+        $remindermailtask = new \mod_syllabus\task\send_reminder_email();
+        ob_start();
+        $remindermailtask->execute();
+        ob_end_clean();
+        $messages = $this->mailsink->get_messages();
+
+        // Should be one message.
+        $this->assertEquals(0, count($messages));
+
+        // Now test with remindersenabled on.
+        set_config('remindersenabled', '1', 'syllabus');
+        
+        // Clear (?) previous message(s).
+        $this->mailsink->clear();
+        ob_start();
+        $remindermailtask->execute();
+        ob_end_clean();
+        $messages = $this->mailsink->get_messages();
+
+        // Should be one message.
+        $this->assertEquals(1, count($messages));
+    }
+
+
+    /**
      * This test will make sure that teachers receive don't receive and email for a course
      * that has a Syllabus activity.
      */
