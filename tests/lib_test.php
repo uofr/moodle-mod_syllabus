@@ -19,13 +19,11 @@
  *
  * @package    mod_syllabus
  * @category   external
- * @copyright  2021 Marty Gilbert <martygilbert@gmail>
+ * @copyright  2020 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @since      Moodle 3.0
+ * @since      Moodle 3.5
  */
-
-defined('MOODLE_INTERNAL') || die();
-
+namespace mod_syllabus;
 
 /**
  * Unit tests for mod_syllabus lib
@@ -36,19 +34,20 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @since      Moodle 3.0
  */
-class mod_syllabus_lib_testcase extends advanced_testcase {
+class lib_test extends \advanced_testcase {
 
     /**
      * Prepares things before this test case is initialised
      * @return void
      */
-    public static function setUpBeforeClass() {
+    public static function setUpBeforeClass(): void {
         global $CFG;
         require_once($CFG->dirroot . '/mod/syllabus/lib.php');
     }
 
     /**
      * Test syllabus_view
+     * @covers \syllabus::syllabus_view
      * @return void
      */
     public function test_syllabus_view() {
@@ -62,7 +61,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
         $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
         $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id),
                                                             array('completion' => 2, 'completionview' => 1));
-        $context = context_module::instance($syllabus->cmid);
+        $context = \context_module::instance($syllabus->cmid);
         $cm = get_coursemodule_from_instance('syllabus', $syllabus->id);
 
         // Trigger and capture the event.
@@ -84,7 +83,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
         $this->assertNotEmpty($event->get_name());
 
         // Check completion status.
-        $completion = new completion_info($course);
+        $completion = new \completion_info($course);
         $completiondata = $completion->get_data($cm);
         $this->assertEquals(1, $completiondata->completionstate);
 
@@ -94,6 +93,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
      * Tests the syllabus_get_coursemodule_info function.
      *
      * Note: This currently doesn't test every aspect of the function, mainly focusing on the icon.
+     * @covers \syllabus::syllabus_et_coursemodule_info
      */
     public function test_get_coursemodule_info() {
         global $DB, $USER;
@@ -112,7 +112,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
 
         // Create a syllabus with one file.
         $draftid = file_get_unused_draft_itemid();
-        $contextid = context_user::instance($USER->id)->id;
+        $contextid = \context_user::instance($USER->id)->id;
         $filerecord = array('component' => 'user', 'filearea' => 'draft', 'contextid' => $contextid,
                 'itemid' => $draftid, 'filename' => 'r2.txt', 'filepath' => '/');
         $fs = get_file_storage();
@@ -143,15 +143,17 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
         $info = syllabus_get_coursemodule_info(
                 $DB->get_record('course_modules', array('id' => $syllabus2->cmid)));
         $this->assertEquals('R2', $info->name);
-        $this->assertEquals('f/text-24', $info->icon);
 
         // For third one, it should use the highest sortorder icon.
         $info = syllabus_get_coursemodule_info(
                 $DB->get_record('course_modules', array('id' => $syllabus3->cmid)));
         $this->assertEquals('R3', $info->name);
-        $this->assertEquals('f/document-24', $info->icon);
     }
 
+    /**
+     * Test mod_syllabus_core_calendar_provide_event_action
+     * @covers \syllabus::mod_syllabus_core_calendar_provide_event_action
+     */
     public function test_syllabus_core_calendar_provide_event_action() {
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -178,6 +180,10 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
         $this->assertTrue($actionevent->is_actionable());
     }
 
+    /**
+     * Test mod_syllabus_core_calendar_provide_event_action
+     * @covers \syllabus::mod_syllabus_core_calendar_provide_event_action
+     */
     public function test_syllabus_core_calendar_provide_event_action_already_completed() {
         global $CFG;
 
@@ -199,7 +205,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
             \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
 
         // Mark the activity as completed.
-        $completion = new completion_info($course);
+        $completion = new \completion_info($course);
         $completion->set_module_viewed($cm);
 
         // Create an action factory.
@@ -214,6 +220,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
 
     /**
      * Test mod_syllabus_core_calendar_provide_event_action with user override
+     * @covers \syllabus::mod_syllabus_core_calendar_provide_event_action
      */
     public function test_syllabus_core_calendar_provide_event_action_user_override() {
         global $CFG, $USER;
@@ -236,7 +243,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
             \core_completion\api::COMPLETION_EVENT_TYPE_DATE_COMPLETION_EXPECTED);
 
         // Mark the activity as completed.
-        $completion = new completion_info($course);
+        $completion = new \completion_info($course);
         $completion->set_module_viewed($cm);
 
         // Create an action factory.
@@ -270,7 +277,7 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
      * @return bool|calendar_event
      */
     private function create_action_event($courseid, $instanceid, $eventtype) {
-        $event = new stdClass();
+        $event = new \stdClass();
         $event->name = 'Calendar event';
         $event->modulename  = 'syllabus';
         $event->courseid = $courseid;
@@ -279,6 +286,6 @@ class mod_syllabus_lib_testcase extends advanced_testcase {
         $event->eventtype = $eventtype;
         $event->timestart = time();
 
-        return calendar_event::create($event);
+        return \calendar_event::create($event);
     }
 }

@@ -1,6 +1,6 @@
 @mod @mod_syllabus @_file_upload
-Feature: Teacher can specify different display options for the resource
-  In order to provide more information about a file
+Feature: Teacher can specify different display options for the syllabus resource
+  In order to provide more information about a syllabus
   As a teacher
   I need to be able to show size, type and modified date
 
@@ -16,43 +16,41 @@ Feature: Teacher can specify different display options for the resource
       | user | course | role |
       | teacher1 | C1 | editingteacher |
       | student1 | C1 | student |
+    And the following "activities" exist:
+      | activity | course | name       | defaultfilename                            | uploaded |
+      | syllabus | C1     | Mysyllabus | mod/syllabus/tests/fixtures/mysyllabus.txt | 1        |
     And I log in as "teacher1"
     And I am on "Course 1" course homepage with editing mode on
+    #And I pause
 
   @javascript
-  Scenario: Specifying no additional display options for a file resource
-    When I add a "File" to section "1"
+  Scenario: Specifying no additional display options for a syllabus resource
+    When I am on the "Mysyllabus" "syllabus activity editing" page
     And I set the following fields to these values:
-      | Name                      | Myfile     |
-      | Show size                 | 0          |
-      | Show type                 | 0          |
-      | Show upload/modified date | 0          |
-    And I upload "mod/syllabus/tests/fixtures/samplefile.txt" file to "Select files" filemanager
+      | Show upload/modified date | 0 |
+      | showsize                  | 0 |
+      | showtype                  | 0 |
     And I press "Save and display"
-    Then ".resourcedetails" "css_element" should not exist
+    Then ".syllabusdetails" "css_element" should not exist
     And I am on "Course 1" course homepage
-    And ".activity.resource .resourcelinkdetails" "css_element" should not exist
-    And I log out
+    And ".activity.syllabus .syllabuslinkdetails" "css_element" should not exist
 
   @javascript
-  Scenario Outline: Specifying different display options for a file resource
-    When I add a "File" to section "1"
+  Scenario Outline: Specifying different display options for a syllabus resource
+    When I am on the "Mysyllabus" "syllabus activity editing" page
     And I set the following fields to these values:
-      | Name                      | Myfile     |
-      | Display                   | Open       |
+      | display                   | 5          |
       | Show size                 | <showsize> |
       | Show type                 | <showtype> |
       | Show upload/modified date | <showdate> |
-    And I upload "mod/syllabus/tests/fixtures/samplefile.txt" file to "Select files" filemanager
     And I press "Save and display"
-    Then I <seesize> see "6 bytes" in the ".resourcedetails" "css_element"
-    And I <seetype> see "Text file" in the ".resourcedetails" "css_element"
-    And I <seedate> see "Uploaded" in the ".resourcedetails" "css_element"
+    Then I <seesize> see "6 bytes" in the ".syllabusdetails" "css_element"
+    And I <seetype> see "Text file" in the ".syllabusdetails" "css_element"
+    And I <seedate> see "Uploaded" in the ".syllabusdetails" "css_element"
     And I am on "Course 1" course homepage
-    And I <seesize> see "6 bytes" in the ".activity.resource .resourcelinkdetails" "css_element"
-    And I <seetype> see "Text file" in the ".activity.resource .resourcelinkdetails" "css_element"
-    And I <seedate> see "Uploaded" in the ".activity.resource .resourcelinkdetails" "css_element"
-    And I log out
+    And I <seesize> see "6 bytes" in the ".activity.syllabus .syllabuslinkdetails" "css_element"
+    And I <seetype> see "Text file" in the ".activity.syllabus .syllabuslinkdetails" "css_element"
+    And I <seedate> see "Uploaded" in the ".activity.syllabus .syllabuslinkdetails" "css_element"
 
     Examples:
       | showsize | showtype | showdate | seesize    | seetype    | seedate    |

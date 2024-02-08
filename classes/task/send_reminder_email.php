@@ -17,90 +17,142 @@
 /**
  * A scheduled task for forum cron.
  *
- * @package    mod_forum
+ * @package    mod_syllabus
  * @copyright  2021 Marty Gilbert <martygilbert@gmail>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 namespace mod_syllabus\task;
 
-defined('MOODLE_INTERNAL') || die();
-
+/**
+ * This class will handle sending out the reminder emails
+ */
 class send_reminder_email extends \core\task\scheduled_task {
 
+    /**
+     * Returns the name of this task
+     * @return string
+     */
     public function get_name() {
         return get_string('reminderemail', 'mod_syllabus');
     }
 
-
+    /**
+     * Executes the task
+     */
     public function execute() {
-        global $DB, $OUTPUT;
-
         $val = get_config('syllabus', 'remindersenabled');
         if (!$val) {
+            mtrace("Not sending reminder emails - remindersenabled is not set");
             return;
         }
 
-		$regex = get_config('syllabus', 'excluderegex');
+        $cats = get_config('syllabus', 'catstocheck');
+        $courses = array();
 
-        // First index is instructor; second is course->shortname.
-        $coursestoprocess = array();
-
-        $cat        = get_config('syllabus', 'uniquecatname');
-        $tohidden   = get_config('syllabus', 'emailstohidden');
-
-        if (!empty($cat)) {
-            $cats = $DB->get_records('course_categories', array('name' => $cat));
-
-            if (count($cats) == 0) {
-                mtrace("No categories named $cat. Emailing admin and exiting.");
-                $this->email_admin("nocatsnamed");
-                return;
-            } else if (count($cats) > 1) {
-                mtrace("More than one category named $cat. Emailing admin and exiting.");
-                $this->email_admin("morethanonecat");
-                return;
+        if (!empty($cats)) {
+            $cats = explode(',', $cats);
+            foreach ($cats as $catid) {
+                $newcourses = $this->get_valid_courses($catid);
+                if ($newcourses) {
+                    $courses = array_merge($newcourses, $courses);
+                }
             }
-
-            $thiscat = reset($cats);
-            $catid = $thiscat->id;
+            $this->process_courses($courses);
         } else {
-            $catid = 0;
+            mtrace("No categories selected to process. Exiting.");
+        }
+    }
+
+    /**
+     * All of the categories to check are listed in the config_plugins table
+     * `catstocheck`. If a category no longer exists, this function will
+     * remove the category id from `catstocheck` so it isn't checked again.
+     * @param int $toremove the category id to remove from `catstocheck`
+     */
+    public function update_config($toremove) {
+        $categories = get_config('syllabus', 'catstocheck');
+        $allcats = explode(',', $categories);
+
+        $idx = array_search($toremove, $allcats);
+        if ($idx) {
+            unset($allcats[$idx]);
         }
 
-        mtrace("Preparing to process category id: $catid");
+        set_config('catstocheck', implode(',', $allcats), 'syllabus');
+    }
 
-        $coursecat = \core_course_category::get($catid);
-        $courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
+    /**
+     * Get all of the courses in a category that need a reminder
+     * @param int $catid the id of the category to analyze
+     * @return array|null
+     */
+    public function get_valid_courses($catid) {
+        global $DB;
+        mtrace("Finding courses in category id $catid to be processed.");
+
+        if (!$catid || !$DB->record_exists('course_categories', ['id' => $catid])) {
+            mtrace("Category ID of $catid does not exist...skipping and removing from config.");
+            $this->update_config($catid);
+            return null;
+        }
+
+        $coursestoprocess = $DB->get_records('course', ['category' => $catid], '', 'id');
+        $coursestoprocess = array_keys($coursestoprocess);
+
+        return $coursestoprocess;
+    }
+
+    /**
+     * Process the courses, compiling a list of each instructor's
+     * courses that lack a Syllabus, then email them.
+     * @param array $courses list of courses without a Syllabus
+     */
+    public function process_courses($courses) {
+        global $OUTPUT;
+
+        // First index is instructor; second is course->shortname.
+        $regex      = get_config('syllabus', 'excluderegex');
+        $tohidden   = get_config('syllabus', 'emailstohidden');
 
         $now = time();
+        $coursestoprocess = array();
         foreach ($courses as $courseid) {
             $course = get_course($courseid);
-			if ($regex) {
-				if(preg_match($regex, $course->shortname)) {
-					mtrace("Skipping course $course->shortname because it matches exclude regex.");
-					continue;
-				}
-			}
+            if ($regex) {
+                if (preg_match($regex, $course->shortname)) {
+                    mtrace("Skipping course $course->shortname because it matches exclude regex.");
+                    continue;
+                }
+            }
+
+            // Fix #10 - Skip courses with no students.
+            $coursecon = \context_course::instance($courseid);
+            $enrolledstudents = count_enrolled_users($coursecon, 'mod/assign:submit');
+            if ($enrolledstudents == 0) {
+                mtrace("Skipping course $course->shortname because it has no students.");
+                continue;
+            }
+
             $syllabi = get_all_instances_in_course('syllabus', $course, null, true);
 
-            if (count($syllabi) == 0 && $course->startdate < $now && $course->enddate > $now) {
+            if (count($syllabi) == 0 && $course->startdate < $now
+                && ($course->enddate == 0 || $course->enddate > $now)) {
 
                 if ($course->visible || (!$course->visible && $tohidden)) {
-
                     // Get instructor(s) to notify.
-                    $coursecon = \context_course::instance($course->id);
-                    $teachers = get_users_by_capability($coursecon, 'moodle/backup:backupcourse', 'u.id');
+                    $teachers = get_users_by_capability($coursecon, 'mod/syllabus:addinstance', 'u.id');
 
                     foreach ($teachers as $teacher) {
                         // Don't add a teacher if they can't view the course currently?
                         // Like it's a hidden course in a category where they can't view hidden courses.
                         if (has_capability('moodle/course:viewhiddencourses', $coursecon, $teacher->id)) {
                             $coursestoprocess[$teacher->id][$course->shortname]['name'] = $course->fullname;
-                            $coursestoprocess[$teacher->id][$course->shortname]['url'] = (string) new \moodle_url('/course/view.php',
-                                array('id' => $course->id));
+                            $coursestoprocess[$teacher->id][$course->shortname]['url'] = (string)
+                                new \moodle_url('/course/view.php', array('id' => $course->id));
+                        } else {
+                            mtrace("Skipping course $course->shortname because course is not visible to teacher.");
                         }
                     }
-
                 }
             }
         }
@@ -117,20 +169,28 @@ class send_reminder_email extends \core\task\scheduled_task {
             $msg = $OUTPUT->render_from_template('mod_syllabus/email_reminder', $data);
             $this->email_teacher($teacherid, $msg, $datestr);
         }
+
     }
 
-    private function email_teacher($teacherid, $msg, $datestr) {
+    /**
+     * Email teacher and let them know they're missing a Syllabus activity.
+     * @param int $teacherid The mdl_user id of the teacher of the course.
+     * @param string $msg The message to send, in HTML.
+     * @param string $datestr The date in m/dd/yy format.
+     */
+    public function email_teacher($teacherid, $msg, $datestr) {
         global $DB;
         $teacher = $DB->get_record('user', array('id' => $teacherid));
+
+        mtrace("Sending reminder email to $teacher->firstname $teacher->lastname");
+
         $admin = get_admin();
 
-        email_to_user($teacher, $admin,
-            get_string('emailsubj', 'mod_syllabus') . ' - ' . $datestr . ' - ' . $teacher->username, html_to_text($msg), $msg);
-    }
-
-    private function email_admin($msg) {
-        $admin = get_admin();
-        email_to_user($admin, $admin, 'Invalid category in mod_syllabus admin settings', html_to_text($msg), $msg);
+        $result = email_to_user($teacher, $admin,
+                get_string('emailsubj', 'mod_syllabus') . ' - ' . $datestr . ' - ' . $teacher->username, html_to_text($msg), $msg);
+        if (!$result) {
+            mtrace("Error emailing $teacher->firstname $teacher->lastname");
+        }
     }
 
 }

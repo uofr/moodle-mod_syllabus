@@ -43,14 +43,14 @@ if ($ADMIN->fulltree) {
                                   );
 
 
-    // --- general settings -----------------------------------------------------------------------------------
+    // General settings.
     $settings->add(new admin_setting_configtext('syllabus/framesize',
         get_string('framesize', 'syllabus'), get_string('configframesize', 'syllabus'), 130, PARAM_INT));
     $settings->add(new admin_setting_configmultiselect('syllabus/displayoptions',
         get_string('displayoptions', 'syllabus'), get_string('configdisplayoptions', 'syllabus'),
         $defaultdisplayoptions, $displayoptions));
 
-    // --- reminder email task settings -----------------------------------------------------------------------------------
+    // Reminder email task settings.
     $settings->add(new admin_setting_heading('syllabusmodtaskreminderemail',
         get_string('taskreminderemailsettings', 'syllabus'), get_string('confreminderemail', 'syllabus')));
 
@@ -60,18 +60,21 @@ if ($ADMIN->fulltree) {
     // Emails to hidden?
     $settings->add(new admin_setting_configcheckbox('syllabus/emailstohidden',
         get_string('emailstohidden', 'syllabus'), get_string('configemailstohidden', 'syllabus'), 1));
-    // Category to process.
-    $settings->add(new admin_setting_configtext('syllabus/uniquecatname',
-        get_string('uniquecategoryname', 'syllabus'), get_string('configuniquecategoryname', 'syllabus'), '', PARAM_ALPHANUM));
+
+    // Categories to process.
+    $categories = core_course_category::make_categories_list();
+    $settings->add(new admin_setting_configmultiselect('syllabus/catstocheck',
+        get_string('catstocheck', 'syllabus'), get_string('configcatstocheck', 'syllabus'), array(), $categories));
+
     // Link to HowTo Add A Syllabus documentation.
     $settings->add(new admin_setting_configtext('syllabus/addsyllabuslink',
         get_string('addsyllabuslink', 'syllabus'), get_string('configaddsyllabuslink', 'syllabus'), '', PARAM_URL));
-    // Exclude courses whose shortnames match this RegEx
+    // Exclude courses whose shortnames match this RegEx.
     $settings->add(new admin_setting_configtext('syllabus/excluderegex',
         get_string('excluderegex', 'syllabus'), get_string('configexcluderegex', 'syllabus'), '', PARAM_RAW));
 
 
-    // --- modedit defaults -----------------------------------------------------------------------------------
+    // Modedit defaults.
     $settings->add(new admin_setting_heading('syllabusmodeditdefaults',
         get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
 

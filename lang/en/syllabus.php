@@ -123,9 +123,9 @@ $string['uploadeddate'] = 'Uploaded {$a}';
 // Added by MJG.
 $string['selectfile'] = 'Select syllabus file';
 $string['reminderemail'] = 'Send reminder to upload syllabus';
-$string['uniquecategoryname'] = 'Category name';
-$string['configuniquecategoryname'] = 'The category name to check recursively. If blank,
-will check the entire site.';
+$string['catstocheck'] = 'Categories to check';
+$string['configcatstocheck'] = 'The categories to check, recursively, for having a
+syllabus present in the courses.';
 $string['emailstohidden']   = 'Send reminders to hidden courses';
 $string['configemailstohidden'] = 'If a course is hidden, still send a reminder email about missing a syllabus';
 $string['taskreminderemailsettings'] = 'Reminder email task settings';
@@ -137,7 +137,7 @@ $string['addsyllabuslink'] = 'Documentation link';
 $string['configaddsyllabuslink'] = 'URL of the training documentaion that explains how a teacher would add a syllabus.
 If this is blank, the relevant language is left out of the reminder emails.';
 $string['excluderegex'] = 'Exclude courses RegEx';
-$string['configexcluderegex'] = 'PHP RegEx performed on course shortnames; matches are excluded from reminder emails. <br>Examples: 
+$string['configexcluderegex'] = 'PHP RegEx performed on course shortnames; matches are excluded from reminder emails. <br>Examples:
     <ul>
         <li>/foo/  - exclude any course with foo in the shortname</li>
         <li>/bar/i - exclude any course with bar in the shortname, case insensitive</li>
