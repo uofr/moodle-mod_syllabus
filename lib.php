@@ -61,7 +61,7 @@ function syllabus_reset_userdata($data) {
     // Any changes to the list of dates that needs to be rolled should be same during course restore and course reset.
     // See MDL-9367.
 
-    return array();
+    return [];
 }
 
 /**
@@ -75,7 +75,7 @@ function syllabus_reset_userdata($data) {
  * @return array
  */
 function syllabus_get_view_actions() {
-    return array('view', 'view all');
+    return ['view', 'view all'];
 }
 
 /**
@@ -89,7 +89,7 @@ function syllabus_get_view_actions() {
  * @return array
  */
 function syllabus_get_post_actions() {
-    return array('update', 'add');
+    return ['update', 'add'];
 }
 
 /**
@@ -110,15 +110,15 @@ function syllabus_add_instance($data, $mform) {
     $data->id = $DB->insert_record('syllabus', $data);
 
     // We need to use context now, so we need to make sure all needed info is already in db.
-    $DB->set_field('course_modules', 'instance', $data->id, array('id' => $cmid));
+    $DB->set_field('course_modules', 'instance', $data->id, ['id' => $cmid]);
     syllabus_set_mainfile($data);
 
     $completiontimeexpected = !empty($data->completionexpected) ? $data->completionexpected : null;
     \core_completion\api::update_completion_date_event($cmid, 'syllabus', $data->id, $completiontimeexpected);
 
     $context = context_module::instance($data->coursemodule);
-    $event = \mod_syllabus\event\course_module_added::create(array('context' => $context, 'objectid' => $data->coursemodule,
-        'other' => array('syllabusid' => $data->id, 'cmid' => $cmid)));
+    $event = \mod_syllabus\event\course_module_added::create(['context' => $context, 'objectid' => $data->coursemodule,
+        'other' => ['syllabusid' => $data->id, 'cmid' => $cmid]]);
 
     $event->trigger();
 
@@ -147,7 +147,7 @@ function syllabus_update_instance($data, $mform) {
     \core_completion\api::update_completion_date_event($data->coursemodule, 'syllabus', $data->id, $completiontimeexpected);
 
     $context = context_module::instance($data->coursemodule);
-    $event = \mod_syllabus\event\course_module_updated::create(array('context' => $context, 'objectid' => $data->coursemodule));
+    $event = \mod_syllabus\event\course_module_updated::create(['context' => $context, 'objectid' => $data->coursemodule]);
     $event->trigger();
 
     return true;
@@ -161,12 +161,12 @@ function syllabus_update_instance($data, $mform) {
  * @param object $data Data object
  */
 function syllabus_set_display_options($data) {
-    $displayoptions = array();
+    $displayoptions = [];
     if ($data->display == RESOURCELIB_DISPLAY_POPUP) {
         $displayoptions['popupwidth']  = $data->popupwidth;
         $displayoptions['popupheight'] = $data->popupheight;
     }
-    if (in_array($data->display, array(RESOURCELIB_DISPLAY_AUTO, RESOURCELIB_DISPLAY_EMBED, RESOURCELIB_DISPLAY_FRAME))) {
+    if (in_array($data->display, [RESOURCELIB_DISPLAY_AUTO, RESOURCELIB_DISPLAY_EMBED, RESOURCELIB_DISPLAY_FRAME])) {
         $displayoptions['printintro']   = (int)!empty($data->printintro);
     }
     if (!empty($data->showsize)) {
@@ -189,7 +189,7 @@ function syllabus_set_display_options($data) {
 function syllabus_delete_instance($id) {
     global $DB;
 
-    if (!$syllabus = $DB->get_record('syllabus', array('id' => $id))) {
+    if (!$syllabus = $DB->get_record('syllabus', ['id' => $id])) {
         return false;
     }
 
@@ -199,11 +199,11 @@ function syllabus_delete_instance($id) {
     // Note: all context files are deleted automatically.
 
     $context = context_module::instance($cm->id);
-    $event = \mod_syllabus\event\course_module_deleted::create(array('context' => $context, 'objectid' => $cm->id,
-        'other' => array('syllabusid' => $id)));
+    $event = \mod_syllabus\event\course_module_deleted::create(['context' => $context, 'objectid' => $cm->id,
+        'other' => ['syllabusid' => $id]]);
     $event->trigger();
 
-    $DB->delete_records('syllabus', array('id' => $syllabus->id));
+    $DB->delete_records('syllabus', ['id' => $syllabus->id]);
 
     return true;
 }
@@ -226,7 +226,7 @@ function syllabus_get_coursemodule_info($coursemodule) {
 
     $context = context_module::instance($coursemodule->id);
 
-    if (!$syllabus = $DB->get_record('syllabus', array('id' => $coursemodule->instance),
+    if (!$syllabus = $DB->get_record('syllabus', ['id' => $coursemodule->instance],
             'id, name, display, displayoptions, tobemigrated, revision, intro, introformat')) {
         return null;
     }
@@ -251,7 +251,7 @@ function syllabus_get_coursemodule_info($coursemodule) {
 
     if ($display == RESOURCELIB_DISPLAY_POPUP) {
         $fullurl = "$CFG->wwwroot/mod/syllabus/view.php?id=$coursemodule->id&amp;redirect=1";
-        $options = empty($syllabus->displayoptions) ? array() : unserialize($syllabus->displayoptions);
+        $options = empty($syllabus->displayoptions) ? [] : unserialize($syllabus->displayoptions);
         $width  = empty($options['popupwidth']) ? 620 : $options['popupwidth'];
         $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
         $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,".
@@ -288,11 +288,11 @@ function syllabus_cm_info_view(cm_info $cm) {
     global $CFG;
     require_once($CFG->dirroot . '/mod/syllabus/locallib.php');
 
-    $syllabus = (object)array('displayoptions' => $cm->customdata);
+    $syllabus = (object)['displayoptions' => $cm->customdata];
     $details = syllabus_get_optional_details($syllabus, $cm);
     if ($details) {
         $cm->set_after_link(' ' . html_writer::tag('span', $details,
-                array('class' => 'syllabuslinkdetails')));
+                ['class' => 'syllabuslinkdetails']));
     }
 }
 
@@ -307,7 +307,7 @@ function syllabus_cm_info_view(cm_info $cm) {
  * @return array
  */
 function syllabus_get_file_areas($course, $cm, $context) {
-    $areas = array();
+    $areas = [];
     $areas['content'] = get_string('syllabuscontent', 'syllabus');
     return $areas;
 }
@@ -375,7 +375,7 @@ function syllabus_get_file_info($browser, $areas, $course, $cm, $context, $filea
  * @param array $options additional options affecting the file serving
  * @return bool false if file not found, does not return if found - just send the file
  */
-function syllabus_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function syllabus_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=[]) {
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
 
@@ -411,7 +411,7 @@ function syllabus_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
                     break;
                 }
             }
-            $syllabus = $DB->get_record('syllabus', array('id' => $cm->instance), 'id, legacyfiles', MUST_EXIST);
+            $syllabus = $DB->get_record('syllabus', ['id' => $cm->instance], 'id, legacyfiles', MUST_EXIST);
             if ($syllabus->legacyfiles != RESOURCELIB_LEGACYFILES_ACTIVE) {
                 return false;
             }
@@ -427,7 +427,7 @@ function syllabus_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
     // Should we apply filters?
     $mimetype = $file->get_mimetype();
     if ($mimetype === 'text/html' || $mimetype === 'text/plain' || $mimetype === 'application/xhtml+xml') {
-        $filter = $DB->get_field('syllabus', 'filterfiles', array('id' => $cm->instance));
+        $filter = $DB->get_field('syllabus', 'filterfiles', ['id' => $cm->instance]);
         $CFG->embeddedsoforcelinktarget = true;
     } else {
         $filter = 0;
@@ -444,7 +444,7 @@ function syllabus_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
  * @param stdClass $currentcontext Current context of block
  */
 function syllabus_page_type_list($pagetype, $parentcontext, $currentcontext) {
-    $pagetype = array('mod-syllabus-*' => get_string('page-mod-syllabus-x', 'syllabus'));
+    $pagetype = ['mod-syllabus-*' => get_string('page-mod-syllabus-x', 'syllabus')];
     return $pagetype;
 }
 
@@ -456,15 +456,15 @@ function syllabus_page_type_list($pagetype, $parentcontext, $currentcontext) {
  */
 function syllabus_export_contents($cm, $baseurl) {
     global $CFG, $DB;
-    $contents = array();
+    $contents = [];
     $context = context_module::instance($cm->id);
-    $syllabus = $DB->get_record('syllabus', array('id' => $cm->instance), '*', MUST_EXIST);
+    $syllabus = $DB->get_record('syllabus', ['id' => $cm->instance], '*', MUST_EXIST);
 
     $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0, 'sortorder DESC, id ASC', false);
 
     foreach ($files as $fileinfo) {
-        $file = array();
+        $file = [];
         $file['type'] = 'file';
         $file['filename']     = $fileinfo->get_filename();
         $file['filepath']     = $fileinfo->get_filepath();
@@ -500,10 +500,10 @@ function syllabus_export_contents($cm, $baseurl) {
 function syllabus_view($syllabus, $course, $cm, $context) {
 
     // Trigger course_module_viewed event.
-    $params = array(
+    $params = [
         'context' => $context,
-        'objectid' => $syllabus->id
-    );
+        'objectid' => $syllabus->id,
+    ];
 
     $event = \mod_syllabus\event\course_module_viewed::create($params);
     $event->add_record_snapshot('course_modules', $cm);
@@ -525,8 +525,8 @@ function syllabus_view($syllabus, $course, $cm, $context) {
  * @return stdClass an object with the different type of areas indicating if they were updated or not
  * @since Moodle 3.2
  */
-function syllabus_check_updates_since(cm_info $cm, $from, $filter = array()) {
-    $updates = course_check_module_updates_since($cm, $from, array('content'), $filter);
+function syllabus_check_updates_since(cm_info $cm, $from, $filter = []) {
+    $updates = course_check_module_updates_since($cm, $from, ['content'], $filter);
     return $updates;
 }
 
@@ -576,7 +576,7 @@ function mod_syllabus_core_calendar_provide_event_action(calendar_event $event,
  * @param  array  $args The path (the part after the filearea and before the filename).
  * @return array The itemid and the filepath inside the $args path, for the defined filearea.
  */
-function mod_syllabus_get_path_from_pluginfile(string $filearea, array $args) : array {
+function mod_syllabus_get_path_from_pluginfile(string $filearea, array $args): array {
     // Resource never has an itemid (the number represents the revision but it's not stored in database).
     array_shift($args);
 

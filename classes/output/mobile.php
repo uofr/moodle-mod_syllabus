@@ -55,7 +55,7 @@ class mobile {
             // Mark it as viewed.
             $syllabi = mod_syllabus_external::view_syllabus($cm->instance);
         } catch (Exception $e) {
-            $issues = array();
+            $issues = [];
         }
 
         $fs = get_file_storage();
@@ -73,9 +73,9 @@ class mobile {
         $thisfile->timemodified = $file->get_timemodified();
         $thisfile->size         = $file->get_filesize();
 
-        $data = array(
+        $data = [
             'file'  => $thisfile,
-        );
+        ];
 
         return [
             'templates' => [

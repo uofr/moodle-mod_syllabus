@@ -27,20 +27,20 @@ defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
     require_once("$CFG->libdir/resourcelib.php");
 
-    $displayoptions = resourcelib_get_displayoptions(array(RESOURCELIB_DISPLAY_AUTO,
+    $displayoptions = resourcelib_get_displayoptions([RESOURCELIB_DISPLAY_AUTO,
                                                            RESOURCELIB_DISPLAY_EMBED,
                                                            RESOURCELIB_DISPLAY_FRAME,
                                                            RESOURCELIB_DISPLAY_DOWNLOAD,
                                                            RESOURCELIB_DISPLAY_OPEN,
                                                            RESOURCELIB_DISPLAY_NEW,
                                                            RESOURCELIB_DISPLAY_POPUP,
-                                                          ));
-    $defaultdisplayoptions = array(RESOURCELIB_DISPLAY_AUTO,
+                                                          ]);
+    $defaultdisplayoptions = [RESOURCELIB_DISPLAY_AUTO,
                                    RESOURCELIB_DISPLAY_EMBED,
                                    RESOURCELIB_DISPLAY_DOWNLOAD,
                                    RESOURCELIB_DISPLAY_OPEN,
                                    RESOURCELIB_DISPLAY_POPUP,
-                                  );
+                                  ];
 
 
     // General settings.
@@ -64,7 +64,7 @@ if ($ADMIN->fulltree) {
     // Categories to process.
     $categories = core_course_category::make_categories_list();
     $settings->add(new admin_setting_configmultiselect('syllabus/catstocheck',
-        get_string('catstocheck', 'syllabus'), get_string('configcatstocheck', 'syllabus'), array(), $categories));
+        get_string('catstocheck', 'syllabus'), get_string('configcatstocheck', 'syllabus'), [], $categories));
 
     // Link to HowTo Add A Syllabus documentation.
     $settings->add(new admin_setting_configtext('syllabus/addsyllabuslink',
@@ -93,7 +93,7 @@ if ($ADMIN->fulltree) {
         get_string('popupwidth', 'syllabus'), get_string('popupwidthexplain', 'syllabus'), 620, PARAM_INT, 7));
     $settings->add(new admin_setting_configtext('syllabus/popupheight',
         get_string('popupheight', 'syllabus'), get_string('popupheightexplain', 'syllabus'), 450, PARAM_INT, 7));
-    $options = array('0' => get_string('none'), '1' => get_string('allfiles'), '2' => get_string('htmlfilesonly'));
+    $options = ['0' => get_string('none'), '1' => get_string('allfiles'), '2' => get_string('htmlfilesonly')];
     $settings->add(new admin_setting_configselect('syllabus/filterfiles',
         get_string('filterfiles', 'syllabus'), get_string('filterfilesexplain', 'syllabus'), 0, $options));
 }

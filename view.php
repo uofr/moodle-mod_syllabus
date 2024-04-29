@@ -33,7 +33,7 @@ $redirect = optional_param('redirect', 0, PARAM_BOOL);
 $forceview = optional_param('forceview', 0, PARAM_BOOL);
 
 if ($r) {
-    if (!$syllabus = $DB->get_record('syllabus', array('id' => $r))) {
+    if (!$syllabus = $DB->get_record('syllabus', ['id' => $r])) {
         throw new \moodle_exception('invalidaccessparameter');
     }
     $cm = get_coursemodule_from_instance('syllabus', $syllabus->id, $syllabus->course, false, MUST_EXIST);
@@ -42,10 +42,10 @@ if ($r) {
     if (!$cm = get_coursemodule_from_id('syllabus', $id)) {
         throw new \moodle_exception('invalidcoursemodule');
     }
-    $syllabus = $DB->get_record('syllabus', array('id' => $cm->instance), '*', MUST_EXIST);
+    $syllabus = $DB->get_record('syllabus', ['id' => $cm->instance], '*', MUST_EXIST);
 }
 
-$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
@@ -54,7 +54,7 @@ require_capability('mod/syllabus:view', $context);
 // Completion and trigger events.
 syllabus_view($syllabus, $course, $cm, $context);
 
-$PAGE->set_url('/mod/syllabus/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/syllabus/view.php', ['id' => $cm->id]);
 
 $fs = get_file_storage();
 $files = $fs->get_area_files($context->id, 'mod_syllabus', 'content', 0,

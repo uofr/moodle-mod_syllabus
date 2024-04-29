@@ -57,7 +57,7 @@ $catid = $options['catid'];
 
 global $CFG, $DB;
 
-$category = $DB->get_record('course_categories', array('id' => $catid));
+$category = $DB->get_record('course_categories', ['id' => $catid]);
 
 if (!$category) {
     cli_error(get_string('clicatidnotfound', 'syllabus', $catid), 4);
@@ -66,7 +66,7 @@ if (!$category) {
 make_path($dest);
 
 $coursecat = \core_course_category::get($category->id, MUST_EXIST, true);
-$courses = $coursecat->get_courses(array('recursive' => true, 'idonly' => true));
+$courses = $coursecat->get_courses(['recursive' => true, 'idonly' => true]);
 
 $fs = get_file_storage();
 
