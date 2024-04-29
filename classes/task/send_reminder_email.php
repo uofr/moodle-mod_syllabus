@@ -47,7 +47,7 @@ class send_reminder_email extends \core\task\scheduled_task {
         }
 
         $cats = get_config('syllabus', 'catstocheck');
-        $courses = array();
+        $courses = [];
 
         if (!empty($cats)) {
             $cats = explode(',', $cats);
@@ -115,7 +115,7 @@ class send_reminder_email extends \core\task\scheduled_task {
         $tohidden   = get_config('syllabus', 'emailstohidden');
 
         $now = time();
-        $coursestoprocess = array();
+        $coursestoprocess = [];
         foreach ($courses as $courseid) {
             $course = get_course($courseid);
             if ($regex) {
@@ -148,7 +148,7 @@ class send_reminder_email extends \core\task\scheduled_task {
                         if (has_capability('moodle/course:viewhiddencourses', $coursecon, $teacher->id)) {
                             $coursestoprocess[$teacher->id][$course->shortname]['name'] = $course->fullname;
                             $coursestoprocess[$teacher->id][$course->shortname]['url'] = (string)
-                                new \moodle_url('/course/view.php', array('id' => $course->id));
+                                new \moodle_url('/course/view.php', ['id' => $course->id]);
                         } else {
                             mtrace("Skipping course $course->shortname because course is not visible to teacher.");
                         }
@@ -162,7 +162,7 @@ class send_reminder_email extends \core\task\scheduled_task {
 
         $datestr = userdate($now, get_string('strftimedatefullshort', 'core_langconfig'));
         $docurl = get_config('syllabus', 'addsyllabuslink');
-        $data = array();
+        $data = [];
         foreach ($coursestoprocess as $teacherid => $courses) {
             $data['courses'] = array_values($courses);
             $data['docurl'] = $docurl;
@@ -180,7 +180,7 @@ class send_reminder_email extends \core\task\scheduled_task {
      */
     public function email_teacher($teacherid, $msg, $datestr) {
         global $DB;
-        $teacher = $DB->get_record('user', array('id' => $teacherid));
+        $teacher = $DB->get_record('user', ['id' => $teacherid]);
 
         mtrace("Sending reminder email to $teacher->firstname $teacher->lastname");
 

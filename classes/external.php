@@ -49,9 +49,9 @@ class mod_syllabus_external extends external_api {
      */
     public static function view_syllabus_parameters() {
         return new external_function_parameters(
-            array(
-                'syllabusid' => new external_value(PARAM_INT, 'syllabus instance id')
-            )
+            [
+                'syllabusid' => new external_value(PARAM_INT, 'syllabus instance id'),
+            ]
         );
     }
 
@@ -68,13 +68,13 @@ class mod_syllabus_external extends external_api {
         require_once($CFG->dirroot . "/mod/syllabus/lib.php");
 
         $params = self::validate_parameters(self::view_syllabus_parameters(),
-                                            array(
-                                                'syllabusid' => $syllabusid
-                                            ));
-        $warnings = array();
+                                            [
+                                                'syllabusid' => $syllabusid,
+                                            ]);
+        $warnings = [];
 
         // Request and permission validation.
-        $syllabus = $DB->get_record('syllabus', array('id' => $params['syllabusid']), '*', MUST_EXIST);
+        $syllabus = $DB->get_record('syllabus', ['id' => $params['syllabusid']], '*', MUST_EXIST);
         list($course, $cm) = get_course_and_cm_from_instance($syllabus, 'syllabus');
 
         $context = context_module::instance($cm->id);
@@ -85,7 +85,7 @@ class mod_syllabus_external extends external_api {
         // Call the syllabus/lib API.
         syllabus_view($syllabus, $course, $cm, $context);
 
-        $result = array();
+        $result = [];
         $result['status'] = true;
         $result['warnings'] = $warnings;
         return $result;
@@ -99,10 +99,10 @@ class mod_syllabus_external extends external_api {
      */
     public static function view_syllabus_returns() {
         return new external_single_structure(
-            array(
+            [
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),
-                'warnings' => new external_warnings()
-            )
+                'warnings' => new external_warnings(),
+            ]
         );
     }
 
@@ -114,11 +114,11 @@ class mod_syllabus_external extends external_api {
      */
     public static function get_syllabus_by_courses_parameters() {
         return new external_function_parameters (
-            array(
+            [
                 'courseids' => new external_multiple_structure(
-                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids', VALUE_DEFAULT, array()
+                    new external_value(PARAM_INT, 'Course id'), 'Array of course ids', VALUE_DEFAULT, []
                 ),
-            )
+            ]
         );
     }
 
@@ -130,17 +130,17 @@ class mod_syllabus_external extends external_api {
      * @return array of warnings and files
      * @since Moodle 3.9
      */
-    public static function get_syllabus_by_courses($courseids = array()) {
+    public static function get_syllabus_by_courses($courseids = []) {
 
-        $warnings = array();
-        $returnedsyllabi = array();
+        $warnings = [];
+        $returnedsyllabi = [];
 
-        $params = array(
+        $params = [
             'courseids' => $courseids,
-        );
+        ];
         $params = self::validate_parameters(self::get_syllabus_by_courses_parameters(), $params);
 
-        $mycourses = array();
+        $mycourses = [];
         if (empty($params['courseids'])) {
             $mycourses = enrol_get_my_courses();
             $params['courseids'] = array_keys($mycourses);
@@ -164,10 +164,10 @@ class mod_syllabus_external extends external_api {
             }
         }
 
-        $result = array(
+        $result = [
             'syllabus' => $returnedsyllabi,
-            'warnings' => $warnings
-        );
+            'warnings' => $warnings,
+        ];
         return $result;
     }
 
@@ -179,7 +179,7 @@ class mod_syllabus_external extends external_api {
      */
     public static function get_syllabus_by_courses_returns() {
         return new external_single_structure(
-            array(
+            [
                 'syllabus' => new external_multiple_structure(
                     new external_single_structure(array_merge(
                         helper_for_get_mods_by_courses::standard_coursemodule_elements_returns(),
@@ -197,7 +197,7 @@ class mod_syllabus_external extends external_api {
                     ))
                 ),
                 'warnings' => new external_warnings(),
-            )
+            ]
         );
     }
 }

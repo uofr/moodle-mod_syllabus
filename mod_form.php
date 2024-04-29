@@ -44,7 +44,7 @@ class mod_syllabus_mod_form extends moodleform_mod {
 
         // -------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
-        $mform->addElement('text', 'name', get_string('name'), array('size' => '48'));
+        $mform->addElement('text', 'name', get_string('name'), ['size' => '48']);
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -57,7 +57,7 @@ class mod_syllabus_mod_form extends moodleform_mod {
         $attributes = $element->getAttributes();
         $attributes['rows'] = 5;
         $element->setAttributes($attributes);
-        $fmoptions = array();
+        $fmoptions = [];
         $fmoptions['accepted_types'] = '*';
         $fmoptions['maxbytes'] = 0;
         $fmoptions['maxfiles'] = 1;
@@ -68,8 +68,8 @@ class mod_syllabus_mod_form extends moodleform_mod {
 
         // Add legacy files flag only if used.
         if (isset($this->current->legacyfiles) && $this->current->legacyfiles != RESOURCELIB_LEGACYFILES_NO) {
-            $options = array(RESOURCELIB_LEGACYFILES_DONE   => get_string('legacyfilesdone', 'syllabus'),
-                             RESOURCELIB_LEGACYFILES_ACTIVE => get_string('legacyfilesactive', 'syllabus'));
+            $options = [RESOURCELIB_LEGACYFILES_DONE   => get_string('legacyfilesdone', 'syllabus'),
+                             RESOURCELIB_LEGACYFILES_ACTIVE => get_string('legacyfilesactive', 'syllabus')];
             $mform->addElement('select', 'legacyfiles', get_string('legacyfiles', 'syllabus'), $options);
         }
 
@@ -104,7 +104,7 @@ class mod_syllabus_mod_form extends moodleform_mod {
         $mform->addHelpButton('showdate', 'showdate', 'syllabus');
 
         if (array_key_exists(RESOURCELIB_DISPLAY_POPUP, $options)) {
-            $mform->addElement('text', 'popupwidth', get_string('popupwidth', 'syllabus'), array('size' => 3));
+            $mform->addElement('text', 'popupwidth', get_string('popupwidth', 'syllabus'), ['size' => 3]);
             if (count($options) > 1) {
                 $mform->hideIf('popupwidth', 'display', 'noteq', RESOURCELIB_DISPLAY_POPUP);
             }
@@ -112,7 +112,7 @@ class mod_syllabus_mod_form extends moodleform_mod {
             $mform->setDefault('popupwidth', $config->popupwidth);
             $mform->setAdvanced('popupwidth', true);
 
-            $mform->addElement('text', 'popupheight', get_string('popupheight', 'syllabus'), array('size' => 3));
+            $mform->addElement('text', 'popupheight', get_string('popupheight', 'syllabus'), ['size' => 3]);
             if (count($options) > 1) {
                 $mform->hideIf('popupheight', 'display', 'noteq', RESOURCELIB_DISPLAY_POPUP);
             }
@@ -132,7 +132,7 @@ class mod_syllabus_mod_form extends moodleform_mod {
             $mform->setDefault('printintro', $config->printintro);
         }
 
-        $options = array('0' => get_string('none'), '1' => get_string('allfiles'), '2' => get_string('htmlfilesonly'));
+        $options = ['0' => get_string('none'), '1' => get_string('allfiles'), '2' => get_string('htmlfilesonly')];
         $mform->addElement('select', 'filterfiles', get_string('filterfiles', 'syllabus'), $options);
         $mform->setDefault('filterfiles', $config->filterfiles);
         $mform->setAdvanced('filterfiles', true);
@@ -157,7 +157,7 @@ class mod_syllabus_mod_form extends moodleform_mod {
     public function data_preprocessing(&$defaultvalues) {
         if ($this->current->instance && !$this->current->tobemigrated) {
             $draftitemid = file_get_submitted_draft_itemid('files');
-            file_prepare_draft_area($draftitemid, $this->context->id, 'mod_syllabus', 'content', 0, array('subdirs' => true));
+            file_prepare_draft_area($draftitemid, $this->context->id, 'mod_syllabus', 'content', 0, ['subdirs' => true]);
             $defaultvalues['files'] = $draftitemid;
         }
         if (!empty($defaultvalues['displayoptions'])) {

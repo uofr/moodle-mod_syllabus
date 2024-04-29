@@ -45,9 +45,9 @@ class generator_test extends \advanced_testcase {
         $this->assertEquals('syllabus', $generator->get_modulename());
 
         // Create three instances in the site course.
-        $generator->create_instance(array('course' => $SITE->id));
-        $generator->create_instance(array('course' => $SITE->id));
-        $syllabus = $generator->create_instance(array('course' => $SITE->id));
+        $generator->create_instance(['course' => $SITE->id]);
+        $generator->create_instance(['course' => $SITE->id]);
+        $syllabus = $generator->create_instance(['course' => $SITE->id]);
         $this->assertEquals(3, $DB->count_records('syllabus'));
 
         // Check the course-module is correct.

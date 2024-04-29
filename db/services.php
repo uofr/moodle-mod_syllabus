@@ -26,23 +26,23 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$functions = array(
+$functions = [
 
-    'mod_syllabus_view_syllabus' => array(
+    'mod_syllabus_view_syllabus' => [
         'classname'     => 'mod_syllabus_external',
         'methodname'    => 'view_syllabus',
         'description'   => 'Simulate the view.php web interface syllabus: trigger events, completion, etc...',
         'type'          => 'write',
         'capabilities'  => 'mod/syllabus:view',
-        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE)
-    ),
-    'mod_syllabus_get_syllabus_by_courses' => array(
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+    'mod_syllabus_get_syllabus_by_courses' => [
         'classname'     => 'mod_syllabus_external',
         'methodname'    => 'get_syllabus_by_courses',
         'description'   => 'Returns a list of syllabi in a provided list of courses, if no list is provided all syllabi that
                             the user can view will be returned.',
         'type'          => 'read',
         'capabilities'  => 'mod/syllabus:view',
-        'services'      => array(MOODLE_OFFICIAL_MOBILE_SERVICE),
-    ),
-);
+        'services'      => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+];

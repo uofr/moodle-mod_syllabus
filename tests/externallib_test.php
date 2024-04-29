@@ -48,7 +48,7 @@ class externallib_test extends externallib_advanced_testcase {
         $this->setAdminUser();
         // Setup test data.
         $course = $this->getDataGenerator()->create_course();
-        $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id));
+        $syllabus = $this->getDataGenerator()->create_module('syllabus', ['course' => $course->id]);
         $context = \context_module::instance($syllabus->cmid);
         $cm = get_coursemodule_from_instance('syllabus', $syllabus->id);
 
@@ -71,7 +71,7 @@ class externallib_test extends externallib_advanced_testcase {
         }
 
         // Test user with full capabilities.
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->getDataGenerator()->enrol_user($user->id, $course->id, $studentrole->id);
 
         // Trigger and capture the event.
@@ -87,7 +87,7 @@ class externallib_test extends externallib_advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_syllabus\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/syllabus/view.php', array('id' => $cm->id));
+        $moodleurl = new \moodle_url('/mod/syllabus/view.php', ['id' => $cm->id]);
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -121,7 +121,7 @@ class externallib_test extends externallib_advanced_testcase {
         $course2 = self::getDataGenerator()->create_course();
 
         $student = self::getDataGenerator()->create_user();
-        $studentrole = $DB->get_record('role', array('shortname' => 'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->getDataGenerator()->enrol_user($student->id, $course1->id, $studentrole->id);
 
         self::setUser($student);
@@ -150,9 +150,9 @@ class externallib_test extends externallib_advanced_testcase {
         $returndescription = mod_syllabus_external::get_syllabus_by_courses_returns();
 
         // Create what we expect to be returned when querying the two courses.
-        $expectedfields = array('id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles', 'lang',
+        $expectedfields = ['id', 'coursemodule', 'course', 'name', 'intro', 'introformat', 'introfiles', 'lang',
                                 'contentfiles', 'tobemigrated', 'legacyfiles', 'legacyfileslast', 'display', 'displayoptions',
-                                'filterfiles', 'revision', 'timemodified', 'section', 'visible', 'groupmode', 'groupingid');
+                                'filterfiles', 'revision', 'timemodified', 'section', 'visible', 'groupmode', 'groupingid'];
 
         // Add expected coursemodule and data.
         $syllabus1->coursemodule = $syllabus1->cmid;
@@ -182,10 +182,10 @@ class externallib_test extends externallib_advanced_testcase {
             $expected2[$field] = $syllabus2->{$field};
         }
 
-        $expectedsyllabus = array($expected2, $expected1);
+        $expectedsyllabus = [$expected2, $expected1];
 
         // Call the external function passing course ids.
-        $result = mod_syllabus_external::get_syllabus_by_courses(array($course2->id, $course1->id));
+        $result = mod_syllabus_external::get_syllabus_by_courses([$course2->id, $course1->id]);
         $result = \external_api::clean_returnvalue($returndescription, $result);
 
         // Remove the contentfiles (to be checked bellow).
@@ -210,19 +210,19 @@ class externallib_test extends externallib_advanced_testcase {
 
         // Add a file to the intro.
         $fileintroname = "fileintro.txt";
-        $filerecordinline = array(
+        $filerecordinline = [
             'contextid' => \context_module::instance($syllabus2->cmid)->id,
             'component' => 'mod_syllabus',
             'filearea'  => 'intro',
             'itemid'    => 0,
             'filepath'  => '/',
             'filename'  => $fileintroname,
-        );
+        ];
         $fs = get_file_storage();
         $timepost = time();
         $fs->create_file_from_string($filerecordinline, 'image contents (not really)');
 
-        $result = mod_syllabus_external::get_syllabus_by_courses(array($course2->id, $course1->id));
+        $result = mod_syllabus_external::get_syllabus_by_courses([$course2->id, $course1->id]);
         $result = \external_api::clean_returnvalue($returndescription, $result);
 
         // Check that we receive correctly the files.
@@ -247,7 +247,7 @@ class externallib_test extends externallib_advanced_testcase {
         $this->assertEquals($expectedsyllabus, $result['syllabus']);
 
         // Call for the second course we unenrolled the user from, expected warning.
-        $result = mod_syllabus_external::get_syllabus_by_courses(array($course2->id));
+        $result = mod_syllabus_external::get_syllabus_by_courses([$course2->id]);
         $this->assertCount(1, $result['warnings']);
         $this->assertEquals('1', $result['warnings'][0]['warningcode']);
         $this->assertEquals($course2->id, $result['warnings'][0]['itemid']);
