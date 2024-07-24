@@ -58,9 +58,9 @@ class lib_test extends \advanced_testcase {
 
         $this->setAdminUser();
         // Setup test data.
-        $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
-        $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id),
-                                                            array('completion' => 2, 'completionview' => 1));
+        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
+        $syllabus = $this->getDataGenerator()->create_module('syllabus', ['course' => $course->id],
+                                                            ['completion' => 2, 'completionview' => 1]);
         $context = \context_module::instance($syllabus->cmid);
         $cm = get_coursemodule_from_instance('syllabus', $syllabus->id);
 
@@ -77,7 +77,7 @@ class lib_test extends \advanced_testcase {
         // Checking that the event contains the expected values.
         $this->assertInstanceOf('\mod_syllabus\event\course_module_viewed', $event);
         $this->assertEquals($context, $event->get_context());
-        $moodleurl = new \moodle_url('/mod/syllabus/view.php', array('id' => $cm->id));
+        $moodleurl = new \moodle_url('/mod/syllabus/view.php', ['id' => $cm->id]);
         $this->assertEquals($moodleurl, $event->get_url());
         $this->assertEventContextNotUsed($event);
         $this->assertNotEmpty($event->get_name());
@@ -107,33 +107,33 @@ class lib_test extends \advanced_testcase {
 
         // Create a syllabus with no files.
         $draftid = file_get_unused_draft_itemid();
-        $syllabus1 = $generator->create_module('syllabus', array('course' => $course->id,
-                'name' => 'R1', 'files' => $draftid));
+        $syllabus1 = $generator->create_module('syllabus', ['course' => $course->id,
+                'name' => 'R1', 'files' => $draftid]);
 
         // Create a syllabus with one file.
         $draftid = file_get_unused_draft_itemid();
         $contextid = \context_user::instance($USER->id)->id;
-        $filerecord = array('component' => 'user', 'filearea' => 'draft', 'contextid' => $contextid,
-                'itemid' => $draftid, 'filename' => 'r2.txt', 'filepath' => '/');
+        $filerecord = ['component' => 'user', 'filearea' => 'draft', 'contextid' => $contextid,
+                'itemid' => $draftid, 'filename' => 'r2.txt', 'filepath' => '/'];
         $fs = get_file_storage();
         $fs->create_file_from_string($filerecord, 'Test');
-        $syllabus2 = $generator->create_module('syllabus', array('course' => $course->id,
-                'name' => 'R2', 'files' => $draftid));
+        $syllabus2 = $generator->create_module('syllabus', ['course' => $course->id,
+                'name' => 'R2', 'files' => $draftid]);
 
         // Create a syllabus with two files.
         $draftid = file_get_unused_draft_itemid();
-        $filerecord = array('component' => 'user', 'filearea' => 'draft', 'contextid' => $contextid,
-                'itemid' => $draftid, 'filename' => 'r3.txt', 'filepath' => '/', 'sortorder' => 1);
+        $filerecord = ['component' => 'user', 'filearea' => 'draft', 'contextid' => $contextid,
+                'itemid' => $draftid, 'filename' => 'r3.txt', 'filepath' => '/', 'sortorder' => 1];
         $fs->create_file_from_string($filerecord, 'Test');
         $filerecord['filename'] = 'r3.doc';
         $filerecord['sortorder'] = 2;
         $fs->create_file_from_string($filerecord, 'Test');
-        $syllabus3 = $generator->create_module('syllabus', array('course' => $course->id,
-                'name' => 'R3', 'files' => $draftid));
+        $syllabus3 = $generator->create_module('syllabus', ['course' => $course->id,
+                'name' => 'R3', 'files' => $draftid]);
 
         // Try get_coursemodule_info for first one.
         $info = syllabus_get_coursemodule_info(
-                $DB->get_record('course_modules', array('id' => $syllabus1->cmid)));
+                $DB->get_record('course_modules', ['id' => $syllabus1->cmid]));
 
         // The name should be set. There is no overridden icon.
         $this->assertEquals('R1', $info->name);
@@ -141,12 +141,12 @@ class lib_test extends \advanced_testcase {
 
         // For second one, there should be an overridden icon.
         $info = syllabus_get_coursemodule_info(
-                $DB->get_record('course_modules', array('id' => $syllabus2->cmid)));
+                $DB->get_record('course_modules', ['id' => $syllabus2->cmid]));
         $this->assertEquals('R2', $info->name);
 
         // For third one, it should use the highest sortorder icon.
         $info = syllabus_get_coursemodule_info(
-                $DB->get_record('course_modules', array('id' => $syllabus3->cmid)));
+                $DB->get_record('course_modules', ['id' => $syllabus3->cmid]));
         $this->assertEquals('R3', $info->name);
     }
 
@@ -160,7 +160,7 @@ class lib_test extends \advanced_testcase {
 
         // Create the activity.
         $course = $this->getDataGenerator()->create_course();
-        $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id));
+        $syllabus = $this->getDataGenerator()->create_module('syllabus', ['course' => $course->id]);
 
         // Create a calendar event.
         $event = $this->create_action_event($course->id, $syllabus->id,
@@ -193,9 +193,9 @@ class lib_test extends \advanced_testcase {
         $CFG->enablecompletion = 1;
 
         // Create the activity.
-        $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
-        $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id),
-            array('completion' => 2, 'completionview' => 1, 'completionexpected' => time() + DAYSECS));
+        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
+        $syllabus = $this->getDataGenerator()->create_module('syllabus', ['course' => $course->id],
+            ['completion' => 2, 'completionview' => 1, 'completionexpected' => time() + DAYSECS]);
 
         // Get some additional data.
         $cm = get_coursemodule_from_instance('syllabus', $syllabus->id);
@@ -231,9 +231,9 @@ class lib_test extends \advanced_testcase {
         $CFG->enablecompletion = 1;
 
         // Create the activity.
-        $course = $this->getDataGenerator()->create_course(array('enablecompletion' => 1));
-        $syllabus = $this->getDataGenerator()->create_module('syllabus', array('course' => $course->id),
-            array('completion' => 2, 'completionview' => 1, 'completionexpected' => time() + DAYSECS));
+        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
+        $syllabus = $this->getDataGenerator()->create_module('syllabus', ['course' => $course->id],
+            ['completion' => 2, 'completionview' => 1, 'completionexpected' => time() + DAYSECS]);
 
         // Get some additional data.
         $cm = get_coursemodule_from_instance('syllabus', $syllabus->id);

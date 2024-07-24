@@ -59,10 +59,10 @@ function syllabus_display_embed($syllabus, $cm, $course, $file) {
     $extension = resourcelib_get_extension($file->get_filename());
 
     $mediamanager = core_media_manager::instance($PAGE);
-    $embedoptions = array(
+    $embedoptions = [
         core_media_manager::OPTION_TRUSTED => true,
         core_media_manager::OPTION_BLOCK => true,
-    );
+    ];
 
     if (file_mimetype_in_typegroup($mimetype, 'web_image')) {  // It's an image.
         $code = resourcelib_embed_image($moodleurl->out(), $title);
@@ -207,7 +207,7 @@ function syllabus_print_workaround($syllabus, $cm, $course, $file) {
             $path = '/'.$file->get_contextid().'/mod_syllabus/content/'.$syllabus->revision.
                 $file->get_filepath().$file->get_filename();
             $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
-            $options = empty($syllabus->displayoptions) ? array() : unserialize($syllabus->displayoptions);
+            $options = empty($syllabus->displayoptions) ? [] : unserialize($syllabus->displayoptions);
             $width  = empty($options['popupwidth']) ? 620 : $options['popupwidth'];
             $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
             $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,".
@@ -274,8 +274,8 @@ function syllabus_print_heading($syllabus, $cm, $course, $notused = false) {
  * @return string Size and type or empty string if show options are not enabled
  */
 function syllabus_get_file_details($syllabus, $cm) {
-    $options = empty($syllabus->displayoptions) ? array() : @unserialize($syllabus->displayoptions);
-    $filedetails = array();
+    $options = empty($syllabus->displayoptions) ? [] : @unserialize($syllabus->displayoptions);
+    $filedetails = [];
     if (!empty($options['showsize']) || !empty($options['showtype']) || !empty($options['showdate'])) {
         $context = context_module::instance($cm->id);
         $fs = get_file_storage();
@@ -343,7 +343,7 @@ function syllabus_get_optional_details($syllabus, $cm) {
 
     $details = '';
 
-    $options = empty($syllabus->displayoptions) ? array() : @unserialize($syllabus->displayoptions);
+    $options = empty($syllabus->displayoptions) ? [] : @unserialize($syllabus->displayoptions);
     if (!empty($options['showsize']) || !empty($options['showtype']) || !empty($options['showdate'])) {
         if (!array_key_exists('filedetails', $options)) {
             $filedetails = syllabus_get_file_details($syllabus, $cm);
@@ -383,7 +383,7 @@ function syllabus_get_optional_details($syllabus, $cm) {
 
         if ($infodisplayed > 1) {
             $details = get_string("syllabusdetails_{$langstring}", 'syllabus',
-                    (object)array('size' => $size, 'type' => $type, 'date' => $date));
+                    (object)['size' => $size, 'type' => $type, 'date' => $date]);
         } else {
             // Only one of size, type and date is set, so just append.
             $details = $size . $type . $date;
@@ -404,12 +404,12 @@ function syllabus_get_optional_details($syllabus, $cm) {
 function syllabus_print_intro($syllabus, $cm, $course, $ignoresettings=false) {
     global $OUTPUT;
 
-    $options = empty($syllabus->displayoptions) ? array() : unserialize($syllabus->displayoptions);
+    $options = empty($syllabus->displayoptions) ? [] : unserialize($syllabus->displayoptions);
 
     $extraintro = syllabus_get_optional_details($syllabus, $cm);
     if ($extraintro) {
         // Put a paragaph tag around the details.
-        $extraintro = html_writer::tag('p', $extraintro, array('class' => 'syllabusdetails'));
+        $extraintro = html_writer::tag('p', $extraintro, ['class' => 'syllabusdetails']);
     }
 
     if ($ignoresettings || !empty($options['printintro']) || $extraintro) {
@@ -465,7 +465,7 @@ function syllabus_get_final_display_type($syllabus) {
     if (file_mimetype_in_typegroup($mimetype, 'archive')) {
         return RESOURCELIB_DISPLAY_DOWNLOAD;
     }
-    if (file_mimetype_in_typegroup($mimetype, array('web_image', '.htm', 'web_video', 'web_audio'))) {
+    if (file_mimetype_in_typegroup($mimetype, ['web_image', '.htm', 'web_video', 'web_audio'])) {
         return RESOURCELIB_DISPLAY_EMBED;
     }
 
@@ -512,7 +512,7 @@ function syllabus_set_mainfile($data) {
 
     $context = context_module::instance($cmid);
     if ($draftitemid) {
-        $options = array('subdirs' => true, 'embed' => false);
+        $options = ['subdirs' => true, 'embed' => false];
         if ($data->display == RESOURCELIB_DISPLAY_EMBED) {
             $options['embed'] = true;
         }

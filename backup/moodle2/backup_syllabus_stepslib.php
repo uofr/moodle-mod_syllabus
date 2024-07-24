@@ -34,15 +34,15 @@ class backup_syllabus_activity_structure_step extends backup_activity_structure_
     protected function define_structure() {
 
         // Define each element separated.
-        $syllabus = new backup_nested_element('syllabus', array('id'), array(
+        $syllabus = new backup_nested_element('syllabus', ['id'], [
             'name', 'intro', 'introformat', 'tobemigrated',
             'legacyfiles', 'legacyfileslast', 'display',
-            'displayoptions', 'filterfiles', 'revision', 'timemodified'));
+            'displayoptions', 'filterfiles', 'revision', 'timemodified']);
 
         // Build the tree.
 
         // Define sources.
-        $syllabus->set_source_table('syllabus', array('id' => backup::VAR_ACTIVITYID));
+        $syllabus->set_source_table('syllabus', ['id' => backup::VAR_ACTIVITYID]);
 
         // Define id annotations (none).
 
