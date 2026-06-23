@@ -55,7 +55,7 @@ $string['dnduploadsyllabus'] = 'Create syllabus';
 $string['encryptedcode'] = 'Encrypted code';
 $string['filenotfound'] = 'File not found, sorry.';
 $string['filterfiles'] = 'Use filters on file content';
-$string['filterfilesexplain'] = 'Select type of file content filtering, please note this may cause problems for some Flash and Java applets. Please make sure that all text files are in UTF-8 encoding.';
+$string['filterfilesexplain'] = 'Select type of file content filtering. Please make sure that all text files are in UTF-8 encoding.';
 $string['filtername'] = 'Resource names auto-linking';
 $string['forcedownload'] = 'Force download';
 $string['framesize'] = 'Frame height';
@@ -147,13 +147,13 @@ $string['configexcluderegex'] = 'PHP RegEx performed on course shortnames; match
 // For reminder emails.
 $string['emailsubj'] = 'Syllabus Missing in Course';
 $string['emailgreeting'] = 'Hello -';
-$string['emailintro'] = 'Instructors at Mars Hill University are required to post a syllabus using the "Syllabus Resource" to each course\'s Moodle site; this replaces older and sometimes department/division-specific syllabus collection methods for accreditation purposes. It appears that at least one of your courses lacks this resource. The courses currently without a Syllabus Resource include:';
-$string['emailtraining'] = 'If you have questions about how to add a Syllabus Resource to your site, please view <a href="{$a}">this tutorial</a>.';
-$string['emailclosing'] = '<p>If you have any questions about the syllabus requirement, please contact your department chair or division dean.</p>
+$string['emailintro'] = 'Instructors are strongly encouraged to post a
+syllabus to each course\'s site. It appears that at least one of your
+courses lacks this resource. The courses currently without a Syllabus Resource include:';
+$string['emailclosing'] = '<p>If you have any questions about the syllabus resource, please contact support.</p>
 <p>Thanks in advance for your attention to this matter,</p>
 
-<p>Moodle Administrator<br>
-moodleadmin@mhu.edu</p>';
+<p>Moodle Administrator</p>';
 
 // For summary emails.
 $string['tasksummaryemailsettings'] = 'Summary email task settings';
