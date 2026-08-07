@@ -57,9 +57,6 @@ $catid = $options['catid'];
 
 global $CFG, $DB;
 
-// Run these as admin user.
-\core\cron::setup_user();
-
 $category = $DB->get_record('course_categories', ['id' => $catid]);
 
 if (!$category) {

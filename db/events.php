@@ -25,8 +25,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 $observers = [
-    [
-        'eventname' => '\core\event\course_category_deleted',
-        'callback'  => 'mod_syllabus_observer::course_category_deleted',
-    ],
+
 ];
