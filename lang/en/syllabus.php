@@ -27,7 +27,7 @@ $string['clicktoopen2'] = 'Click {$a} link to view the file.';
 $string['configdisplayoptions'] = 'Select all options that should be available, existing settings are not modified. Hold CTRL key to select multiple fields.';
 $string['configframesize'] = 'When a web page or an uploaded file is displayed within a frame, this value is the height (in pixels) of the top frame (which contains the navigation).';
 $string['configparametersettings'] = 'This sets the default value for the Parameter settings pane in the form when adding some new syllabi. After the first time, this becomes an individual user preference.';
-$string['configpopup'] = 'When adding a new syllabus which is able to be shown in a popup window, should this option be enabled by default?';
+$string['configpopup'] = 'When adding a new syllabus that is able to be shown in a popup window, should this option be enabled by default?';
 $string['configpopupdirectories'] = 'Should popup windows show directory links by default?';
 $string['configpopupheight'] = 'What height should be the default height for new popup windows?';
 $string['configpopuplocation'] = 'Should popup windows show the location bar by default?';
@@ -43,7 +43,7 @@ $string['displayselect'] = 'Display';
 $string['displayselect_help'] = 'This setting, together with the file type and whether the browser allows embedding, determines how the file is displayed. Options may include:
 
 * Automatic - The best display option for the file type is selected automatically
-* Embed - The file is displayed within the page below the navigation bar together with the file description and any blocks
+* Embed - The file is displayed within the page below the navigation bar, together with the file description and any blocks
 * Force download - The user is prompted to download the file
 * Open - Only the file is displayed in the browser window
 * In pop-up - The file is displayed in a new browser window without menus or an address bar
@@ -89,7 +89,7 @@ $string['popupsyllabuslink'] = 'If it didn\'t, click here: {$a}';
 $string['popupwidth'] = 'Pop-up width (in pixels)';
 $string['popupwidthexplain'] = 'Specifies default width of popup windows.';
 $string['printintro'] = 'Display syllabus description';
-$string['printintroexplain'] = 'Display syllabus description below content? Some display types may not display description even if enabled.';
+$string['printintroexplain'] = 'Display syllabus description below content? Some display types may not display the description even if enabled.';
 $string['privacy:metadata'] = 'The syllabus plugin does not store any personal data.';
 $string['syllabus:addinstance'] = 'Add a new syllabus';
 $string['syllabuscontent'] = 'Files and subfolders';
@@ -124,15 +124,13 @@ $string['uploadeddate'] = 'Uploaded {$a}';
 $string['selectfile'] = 'Select syllabus file';
 $string['reminderemail'] = 'Send reminder to upload syllabus';
 $string['catstocheck'] = 'Categories to check';
-$string['configcatstocheck'] = 'The categories to check, recursively, for having a
-syllabus present in the courses.';
+$string['configcatstocheck'] = 'The categories to check for having a Syllabus present in the courses.';
 $string['emailstohidden']   = 'Send reminders to hidden courses';
 $string['configemailstohidden'] = 'If a course is hidden, still send a reminder email about missing a syllabus';
 $string['taskreminderemailsettings'] = 'Reminder email task settings';
 $string['confreminderemail'] = 'Settings that affect the remdiner email scheduled task';
 $string['enablereminders'] = 'Enable reminder emails';
-$string['configenablereminders'] = 'If enabled, will send email reminders to teachers that
-don\'t have a Syllabus activity in their courses.';
+$string['configenablereminders'] = 'If enabled, will send email reminders to teachers that don\'t have a Syllabus activity in their courses.';
 $string['addsyllabuslink'] = 'Documentation link';
 $string['configaddsyllabuslink'] = 'URL of the training documentaion that explains how a teacher would add a syllabus.
 If this is blank, the relevant language is left out of the reminder emails.';
@@ -156,3 +154,35 @@ $string['emailclosing'] = '<p>If you have any questions about the syllabus resou
 <p>Thanks in advance for your attention to this matter,</p>
 
 <p>Moodle Administrator</p>';
+// For summary emails.
+$string['tasksummaryemailsettings'] = 'Summary email task settings';
+$string['confsummaryemail'] = 'Settings that affect the summary email scheduled task';
+$string['enablesummary'] = 'Enable summary emails';
+$string['configenablesummary'] = 'If enabled, will send a weekly summary email listing eligible courses that do not have a Syllabus activity.';
+$string['summaryemails'] = 'Summary email recipients';
+$string['configsummaryemails'] = 'Comma-separated list of Moodle usernames to receive the weekly summary email.';
+$string['summaryemail'] = 'Send weekly summary of missing syllabi';
+$string['summaryemailsubj'] = 'Syllabus Summary Report';
+$string['summaryemailintro'] = 'The following is a summary of eligible courses that do not have a syllabus posted as of {$a}.';
+$string['summaryemailcategory'] = 'Category';
+$string['summaryemaileligible'] = 'Eligible courses';
+$string['summaryemailwith'] = 'With syllabus';
+$string['summaryemailwithout'] = 'Without syllabus';
+$string['summaryemailtop10heading'] = 'Top 10 instructors with missing syllabi';
+$string['summaryemailtop10courses'] = 'course(s) without a syllabus';
+
+// For CLI scripts.
+$string['clicatidnotfound'] = 'Error. Category id {$a} does not exist. Exiting.';
+$string['climissingrequiredarg'] = 'Missing required argument \'{$a}\'.';
+$string['clidispteachers'] = 'Teachers for this course:';
+$string['cliusage'] = "Will download, recursively, all of the files posted to the Syllabus activity given a category id.
+
+Usage:
+    # php download_syllabi.php --path=/tmp/syllabi --catid=1234
+    # php download_syllabi.php [--help|-h]
+
+Options:
+    -h --help                   Print this help.
+    --path=<value>  Path where the syllabi should be downloaded.
+    --catid=<value> The category id of the category to process
+";

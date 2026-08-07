@@ -24,7 +24,7 @@
 /**
  * List of features supported in Syllabus module
  * @param string $feature FEATURE_xx constant for requested feature
- * @return mixed True if module supports feature, false if not, null if doesn't know
+ * @return mixed True if module supports feature, false if not, null if doesn't know or string for the module purpose
  */
 function syllabus_supports($feature) {
     switch($feature) {
